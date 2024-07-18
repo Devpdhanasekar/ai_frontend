@@ -1,0 +1,93 @@
+General table styling
+.company-grid-container {
+  margin: 20px;
+  font-family: Arial, sans-serif;
+  overflow-x: auto; /* Enable horizontal scrolling */
+  white-space: nowrap; /* Prevent columns from wrapping */
+}
+
+/* Styling for the table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Styling for table headers and cells */
+th, td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #ddd;
+  min-width: 8%; /* Set each column to be 8% of the total width */
+}
+
+/* Styling for table headers */
+th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+/* Zebra striping for table rows */
+tbody tr:nth-child(odd) {
+  background-color: #f9f9f9;
+}
+
+/* Responsive adjustments for smaller screens */
+@media screen and (max-width: 600px) {
+  table, thead, tbody, th, td, tr {
+    display: block; /* Make table elements block to stack them */
+  }
+
+  th {
+    position: absolute; /* Remove table headers */
+    top: -9999px;
+    left: -9999px;
+  }
+
+  td {
+    position: relative;
+    padding-left: 50%;
+    border: none;
+    border-bottom: 1px solid #ddd;
+  }
+
+  td:before {
+    content: attr(data-label);
+    position: absolute;
+    left: 0;
+    width: 45%;
+    padding-left: 10px;
+    font-weight: bold;
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    margin-bottom: 10px;
+  }
+}
+
+/* Button styling */
+button {
+  margin: 20px 0;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+
+.search-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
