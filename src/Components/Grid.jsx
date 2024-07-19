@@ -590,7 +590,7 @@ const CompanyGrid = () => {
                     </button>
                   </div>
                 </div>
-                {expandedRow === company.position && (
+                {/* {expandedRow === company.position && (
                   <div className="expanded-row">
                     {isLoading ? (
                       <div className="loader">Loading...</div>
@@ -611,7 +611,7 @@ const CompanyGrid = () => {
                       </div>
                     )}
                   </div>
-                )}
+                )} */}
               </React.Fragment>
             ))}
           </div>
