@@ -2,6 +2,8 @@ import axios from "axios";
 import React, { useState } from "react";
 import "./CompanyGrid.css";
 import { useNavigate } from "react-router-dom";
+import Box from '@mui/material/Box';
+import { DataGrid } from '@mui/x-data-grid';
 
 const CompanyGrid = () => {
   const [location, setLocation] = useState("");
@@ -12,6 +14,7 @@ const CompanyGrid = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedCompanies, setSelectedCompanies] = useState([]);
 
+  console.log(selectedCompanies)
   const toggleExpand = (id) => {
     setExpandedRow(expandedRow === id ? null : id);
   };
@@ -79,14 +82,11 @@ const CompanyGrid = () => {
     navigate("/details");
   };
 
-  const handleCheckboxChange = (companyId) => {
-    setSelectedCompanies((prevSelected) => {
-      if (prevSelected.includes(companyId)) {
-        return prevSelected.filter((id) => id !== companyId);
-      } else {
-        return [...prevSelected, companyId];
-      }
-    });
+  const handleCheckboxChange = (company) => {
+    setSelectedCompanies({
+      ...selectedCompanies,
+      ...company
+    })
   };
 
   const handleScrapeSelected = async () => {
@@ -116,6 +116,110 @@ const CompanyGrid = () => {
     }
   };
 
+
+
+  const columns = [
+    {
+      field: 'checkbox',
+      headerName: 'Select',
+      width: 50,
+      renderCell: (params) => (
+        <input
+          type="checkbox"
+          // checked={selectedCompanies.includes(params.row.id)}
+          onChange={() => handleCheckboxChange(params.row)}
+        />
+      ),
+    },
+    {
+      field: 'id',
+      headerName: 'S.No',
+      width: 50,
+      renderCell: (params) => params.api.getAllRowIds().indexOf(params.id) + 1
+    },
+    {
+      field: 'title',
+      headerName: 'Company Name',
+      width: 230,
+      editable: true,
+      renderCell: (params) => (
+        <div style={{
+          whiteSpace: 'normal',
+          overflowWrap: 'break-word',
+          wordBreak: 'break-all',
+          padding: '4px',
+          boxSizing: 'border-box'
+        }}>
+          {params.value}
+        </div>
+      ),
+    },
+    {
+      field: 'website',
+      headerName: 'Website',
+      width: 300,
+      editable: true,
+      renderCell: (params) => (
+        <div style={{
+          whiteSpace: 'normal',
+          overflowWrap: 'break-word',
+          wordBreak: 'break-all',
+          padding: '4px',
+          boxSizing: 'border-box'
+        }}>
+          {params.value}
+        </div>
+      ),
+    },
+    {
+      field: 'type',
+      headerName: 'Type',
+      type: 'number',
+      width: 200,
+      editable: true,
+      renderCell: (params) => (
+        <div style={{
+          whiteSpace: 'normal',
+          overflowWrap: 'break-word',
+          wordBreak: 'break-all',
+          padding: '4px',
+          boxSizing: 'border-box'
+        }}>
+          {params.value}
+        </div>
+      ),
+    },
+    {
+      field: 'phone',
+      headerName: 'Mobile Number',
+      type: 'number',
+      width: 200,
+      editable: true,
+    },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      type: 'number',
+      width: 150,
+      editable: true,
+      renderCell: (params) => (
+        <button
+          className="list_scrap_button"
+          onClick={() => getLLMData(params.row)}
+          disabled={isLoading}
+        >
+          {isLoading && expandedRow === params.row.position
+            ? "Loading..."
+            : "Scrap Data"}
+        </button>
+      ),
+    }
+  ]
+
+  const getRowHeight = (params) => {
+    return 'auto';
+  };
+
   return (
     <div className="company-grid-container">
       <div className="input-container">
@@ -131,7 +235,7 @@ const CompanyGrid = () => {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
-        <button onClick={handleNavigate}>View all</button>
+        <button onClick={handleNavigate} className="view_all_btn">View all</button>
         <button onClick={handleOnClick} disabled={isLoading}>
           {isLoading ? "Loading..." : "Search"}
         </button>
@@ -146,52 +250,25 @@ const CompanyGrid = () => {
           >
             {isLoading ? "Loading..." : "Scrape Selected"}
           </button>
-          <div className="grid-container">
-            <div className="grid-header">
-              <div>Select</div>
-              <div>Company Name</div>
-              <div>Website</div>
-              <div>Type</div>
-              <div>Mobile Number</div>
-              <div>Actions</div>
-              <div></div>
-            </div>
-            {companies.map((company) => (
-              <React.Fragment key={company.id}>
-                <div className="grid-row">
-                  <div>
-                    <input
-                      type="checkbox"
-                      checked={selectedCompanies.includes(company.id)}
-                      onChange={() => handleCheckboxChange(company.id)}
-                    />
-                  </div>
-                  <div>{company.title}</div>
-                  <div>{company.website}</div>
-                  <div>{company.type}</div>
-                  <div>{company.phone}</div>
-                  <div>
-                    <button
-                      onClick={() => getLLMData(company)}
-                      disabled={isLoading}
-                    >
-                      {isLoading && expandedRow === company.position
-                        ? "Loading..."
-                        : "Scrap Data"}
-                    </button>
-                  </div>
-                  <div>
-                    <button
-                      className="expand-btn"
-                      onClick={() => toggleExpand(company.position)}
-                    >
-                      {expandedRow === company.position ? "▲" : "▼"}
-                    </button>
-                  </div>
-                </div>
-              </React.Fragment>
-            ))}
-          </div>
+          <Box sx={{ height: 400, width: '100%' }}>
+            <DataGrid
+              rows={companies}
+              columns={columns}
+              getRowId={(row) => row?.data_id}
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 10,
+                  },
+                },
+              }}
+              pageSizeOptions={[5]}
+              // checkboxSelection
+              disableRowSelectionOnClick
+              getRowHeight={getRowHeight}
+
+            />
+          </Box>
         </>
       )}
     </div>

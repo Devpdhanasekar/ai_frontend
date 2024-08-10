@@ -1,9 +1,10 @@
-General table styling
-.company-grid-container {
+General table styling .company-grid-container {
   margin: 20px;
   font-family: Arial, sans-serif;
-  overflow-x: auto; /* Enable horizontal scrolling */
-  white-space: nowrap; /* Prevent columns from wrapping */
+  overflow-x: auto;
+  /* Enable horizontal scrolling */
+  white-space: nowrap;
+  /* Prevent columns from wrapping */
 }
 
 /* Styling for the table */
@@ -13,11 +14,13 @@ table {
 }
 
 /* Styling for table headers and cells */
-th, td {
+th,
+td {
   padding: 10px;
   text-align: left;
   border: 1px solid #ddd;
-  min-width: 8%; /* Set each column to be 8% of the total width */
+  min-width: 8%;
+  /* Set each column to be 8% of the total width */
 }
 
 /* Styling for table headers */
@@ -33,12 +36,20 @@ tbody tr:nth-child(odd) {
 
 /* Responsive adjustments for smaller screens */
 @media screen and (max-width: 600px) {
-  table, thead, tbody, th, td, tr {
-    display: block; /* Make table elements block to stack them */
+
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    display: block;
+    /* Make table elements block to stack them */
   }
 
   th {
-    position: absolute; /* Remove table headers */
+    position: absolute;
+    /* Remove table headers */
     top: -9999px;
     left: -9999px;
   }
@@ -90,4 +101,97 @@ button:disabled {
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
+}
+
+.list_scrap_button {
+  margin: 0;
+}
+
+.view_all_btn {
+  margin-right: 20px;
+}
+
+.expand-btn {
+  color: #000;
+  margin: 0;
+}
+
+.css-1mipfrf-MuiDataGrid-root .MuiDataGrid-columnHeaderTitleContainer {
+  justify-content: center;
+}
+
+.css-1mipfrf-MuiDataGrid-root .MuiDataGrid-cell--textRight {
+  text-align: center !important;
+}
+
+.css-1mipfrf-MuiDataGrid-root .MuiDataGrid-cell--textLeft {
+  text-align: center !important;
+}
+
+.css-1mipfrf-MuiDataGrid-root .MuiDataGrid-row--dynamicHeight>.MuiDataGrid-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fa-pen-to-square {
+  font-size: 20px;
+  margin-top: 10px;
+}
+
+.edit_btn {
+  background-color: white;
+  color: #000;
+  padding: 0;
+  margin: 0;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  position: relative;
+  width: auto;
+  max-width: 500px;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  top: -5px;
+  right: -5px;
+}
+
+.fa-circle-xmark {
+  color: #000;
+
+}
+
+.modal_outline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal_input {
+  padding: 10px;
 }
