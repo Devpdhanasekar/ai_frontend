@@ -71,10 +71,6 @@ const CustomTable = () => {
               <th>Twitter</th>
               <th>Youtube</th>
               <th>Instagram</th>
-              <th>Fund Manager</th>
-              <th>Eligibility</th>
-              <th>Documents Required</th>
-              <th>Co-Investors</th>
               <th>Founders</th>
               <th>Tags / Keywords</th>
             </tr>
@@ -140,10 +136,6 @@ const CustomTable = () => {
                   </a>
                 </td>
                 <td>{company.instagram}</td>
-                <td>{company.fund_manager}</td>
-                <td>{company.eligibility}</td>
-                <td>{company.documents_required}</td>
-                <td>{company.co_investors}</td>
                 <td>{company.founders}</td>
                 <td>{company.tags_or_keywords}</td>
               </tr>
