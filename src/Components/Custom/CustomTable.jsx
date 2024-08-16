@@ -31,7 +31,7 @@ const CustomTable = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://13.233.166.167:8080/investment");
+      const response = await axios.get("http://13.234.217.17:8080/investment");
       console.log(response.data);
       setCompanies(response.data);
     } catch (error) {
@@ -51,14 +51,14 @@ const CustomTable = () => {
       };
       if (manualAns === "") {
         const response = await axios.post(
-          "http://13.233.166.167:8080/update",
+          "http://13.234.217.17:8080/update",
           payloadData
         );
         console.log(response.data);
         fetchData().then(() => closeModal());
       } else {
         const response = await axios.post(
-          "http://13.233.166.167:8080/updateManual",
+          "http://13.234.217.17:8080/updateManual",
           payloadData
         );
         console.log(response.data);
