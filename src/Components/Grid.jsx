@@ -1,9 +1,9 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./CompanyGrid.css";
 import { useNavigate } from "react-router-dom";
-import Box from '@mui/material/Box';
-import { DataGrid } from '@mui/x-data-grid';
+import Box from "@mui/material/Box";
+import { DataGrid } from "@mui/x-data-grid";
 
 const CompanyGrid = () => {
   const [location, setLocation] = useState("");
@@ -14,10 +14,13 @@ const CompanyGrid = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedCompanies, setSelectedCompanies] = useState([]);
 
-  console.log(selectedCompanies)
+  console.log(selectedCompanies);
   const toggleExpand = (id) => {
     setExpandedRow(expandedRow === id ? null : id);
   };
+  useEffect(() => {
+    setCompanies(JSON.parse(localStorage.getItem("companies")));
+  }, []);
 
   const handleOnClick = async () => {
     setIsLoading(true);
@@ -28,7 +31,7 @@ const CompanyGrid = () => {
     };
     let configuration = {
       method: "POST",
-      url: "http://54.214.162.14:8080/googlemap",
+      url: "http://13.233.166.167:8080/googlemap",
       headers: {
         "Content-Type": "application/json",
       },
@@ -38,7 +41,8 @@ const CompanyGrid = () => {
       let fetchData = await axios(configuration);
       if (fetchData.status === 200) {
         console.log(fetchData.data);
-        setCompanies(fetchData.data.result);
+        setCompanies(fetchData.data);
+        localStorage.setItem("companies", JSON.stringify(fetchData.data));
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -48,11 +52,11 @@ const CompanyGrid = () => {
   };
 
   const getLLMData = async (company) => {
-    setIsLoading(true);
-    setExpandedRow(company.position);
+    console.log(company);
+    // setExpandedRow(company.position);
     let configuration = {
       method: "POST",
-      url: "http://54.214.162.14:8080/webscrap",
+      url: "http://13.233.166.167:8080/initialDataScrape",
       headers: {
         "Content-Type": "application/json",
       },
@@ -60,6 +64,7 @@ const CompanyGrid = () => {
     };
     try {
       const investorData = await axios(configuration);
+      console.log(investorData.data);
       if (investorData.status === 200) {
         alert(
           investorData.data.message
@@ -85,8 +90,8 @@ const CompanyGrid = () => {
   const handleCheckboxChange = (company) => {
     setSelectedCompanies({
       ...selectedCompanies,
-      ...company
-    })
+      ...company,
+    });
   };
 
   const handleScrapeSelected = async () => {
@@ -97,7 +102,7 @@ const CompanyGrid = () => {
 
     let configuration = {
       method: "POST",
-      url: "http://54.214.162.14:8080/webscrap",
+      url: "http://13.234.226.175.108.164.120:8080/webscrap",
       headers: {
         "Content-Type": "application/json",
       },
@@ -116,12 +121,10 @@ const CompanyGrid = () => {
     }
   };
 
-
-
   const columns = [
     {
-      field: 'checkbox',
-      headerName: 'Select',
+      field: "checkbox",
+      headerName: "Select",
       width: 50,
       renderCell: (params) => (
         <input
@@ -132,74 +135,80 @@ const CompanyGrid = () => {
       ),
     },
     {
-      field: 'id',
-      headerName: 'S.No',
+      field: "id",
+      headerName: "S.No",
       width: 50,
-      renderCell: (params) => params.api.getAllRowIds().indexOf(params.id) + 1
+      renderCell: (params) => params.api.getAllRowIds().indexOf(params.id) + 1,
     },
     {
-      field: 'title',
-      headerName: 'Company Name',
+      field: "title",
+      headerName: "Company Name",
       width: 230,
       editable: true,
       renderCell: (params) => (
-        <div style={{
-          whiteSpace: 'normal',
-          overflowWrap: 'break-word',
-          wordBreak: 'break-all',
-          padding: '4px',
-          boxSizing: 'border-box'
-        }}>
+        <div
+          style={{
+            whiteSpace: "normal",
+            overflowWrap: "break-word",
+            wordBreak: "break-all",
+            padding: "4px",
+            boxSizing: "border-box",
+          }}
+        >
           {params.value}
         </div>
       ),
     },
     {
-      field: 'website',
-      headerName: 'Website',
+      field: "website",
+      headerName: "Website",
       width: 300,
       editable: true,
       renderCell: (params) => (
-        <div style={{
-          whiteSpace: 'normal',
-          overflowWrap: 'break-word',
-          wordBreak: 'break-all',
-          padding: '4px',
-          boxSizing: 'border-box'
-        }}>
+        <div
+          style={{
+            whiteSpace: "normal",
+            overflowWrap: "break-word",
+            wordBreak: "break-all",
+            padding: "4px",
+            boxSizing: "border-box",
+          }}
+        >
           {params.value}
         </div>
       ),
     },
     {
-      field: 'type',
-      headerName: 'Type',
-      type: 'number',
+      field: "type",
+      headerName: "Type",
+      type: "number",
       width: 200,
       editable: true,
       renderCell: (params) => (
-        <div style={{
-          whiteSpace: 'normal',
-          overflowWrap: 'break-word',
-          wordBreak: 'break-all',
-          padding: '4px',
-          boxSizing: 'border-box'
-        }}>
+        <div
+          style={{
+            whiteSpace: "normal",
+            overflowWrap: "break-word",
+            wordBreak: "break-all",
+            padding: "4px",
+            boxSizing: "border-box",
+          }}
+        >
           {params.value}
         </div>
       ),
     },
     {
-      field: 'phone',
-      headerName: 'Mobile Number',
-      type: 'number',
+      field: "phone",
+      headerName: "Mobile Number",
+      type: "number",
       width: 200,
       editable: true,
     },
     {
-      field: 'actions',
-      headerName: 'Actions',
-      type: 'number',
+      field: "actions",
+      headerName: "Actions",
+      type: "number",
       width: 150,
       editable: true,
       renderCell: (params) => (
@@ -213,11 +222,11 @@ const CompanyGrid = () => {
             : "Scrap Data"}
         </button>
       ),
-    }
-  ]
+    },
+  ];
 
   const getRowHeight = (params) => {
-    return 'auto';
+    return "auto";
   };
 
   return (
@@ -235,7 +244,9 @@ const CompanyGrid = () => {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
-        <button onClick={handleNavigate} className="view_all_btn">View all</button>
+        <button onClick={handleNavigate} className="view_all_btn">
+          View all
+        </button>
         <button onClick={handleOnClick} disabled={isLoading}>
           {isLoading ? "Loading..." : "Search"}
         </button>
@@ -250,7 +261,7 @@ const CompanyGrid = () => {
           >
             {isLoading ? "Loading..." : "Scrape Selected"}
           </button>
-          <Box sx={{ height: 400, width: '100%' }}>
+          <Box sx={{ height: 400, width: "100%" }}>
             <DataGrid
               rows={companies}
               columns={columns}
@@ -266,7 +277,6 @@ const CompanyGrid = () => {
               // checkboxSelection
               disableRowSelectionOnClick
               getRowHeight={getRowHeight}
-
             />
           </Box>
         </>
