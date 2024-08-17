@@ -5,15 +5,18 @@ import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import Modal from "./Modal";
 import { Link } from "react-router-dom";
+import * as XLSX from "xlsx";
+
 const CustomTable = () => {
   const [companies, setCompanies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedRow, setSelectedRow] = useState(null); // To store the selected row data
+  const [selectedRow, setSelectedRow] = useState(null);
   const [modalInputValue, setModalInputValue] = useState("");
   const [selectedField, setSelectedField] = useState(null);
   const [manualAns, setManualAns] = useState("");
+
   const openModal = (rowData) => {
     setSelectedRow(rowData);
     setIsModalOpen(true);
@@ -24,24 +27,30 @@ const CustomTable = () => {
     setSelectedRow(null);
     setModalInputValue("");
   };
+
   const handleCellClick = (params) => {
     setSelectedRow(params.row);
-    setSelectedField(params.field); // Capture the field name
+    setSelectedField(params.field);
   };
 
   const fetchData = async () => {
     try {
+      setIsLoading(true);
       const response = await axios.get("http://13.234.217.17:8080/investment");
       console.log(response.data);
       setCompanies(response.data);
     } catch (error) {
       console.error("Error fetching the investors data", error);
+    } finally {
+      setIsLoading(false);
     }
   };
+
   useEffect(() => {
     fetchData();
   }, []);
-  const handleUpdate = async (data) => {
+
+  const handleUpdate = async () => {
     try {
       const payloadData = {
         context: selectedField,
@@ -49,21 +58,14 @@ const CustomTable = () => {
         url: modalInputValue,
         user_answer: manualAns,
       };
-      if (manualAns === "") {
-        const response = await axios.post(
-          "http://13.234.217.17:8080/update",
-          payloadData
-        );
-        console.log(response.data);
-        fetchData().then(() => closeModal());
-      } else {
-        const response = await axios.post(
-          "http://13.234.217.17:8080/updateManual",
-          payloadData
-        );
-        console.log(response.data);
-        fetchData().then(() => closeModal());
-      }
+      const endpoint = manualAns === "" ? "update" : "updateManual";
+      const response = await axios.post(
+        `http://13.234.217.17:8080/${endpoint}`,
+        payloadData
+      );
+      console.log(response.data);
+      await fetchData();
+      closeModal();
     } catch (error) {
       console.log(error);
     }
@@ -77,7 +79,44 @@ const CustomTable = () => {
     company.fund_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  console.log("filtererdcomapnies", filteredCompanies);
+  const downloadExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(filteredCompanies);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Companies");
+
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+
+    const data = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    const url = window.URL.createObjectURL(data);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "companies.xlsx";
+    link.click();
+  };
+
+  const renderCellWithEditButton = (params) => (
+    <div
+      style={{
+        whiteSpace: "normal",
+        overflowWrap: "break-word",
+        wordBreak: "break-all",
+        padding: "4px",
+        boxSizing: "border-box",
+      }}
+    >
+      {params.value}
+      <br />
+      <button className="edit_btn" onClick={() => openModal(params.row)}>
+        <i className="fa-solid fa-pen-to-square"></i>
+      </button>
+    </div>
+  );
+
   const columns = [
     {
       field: "id",
@@ -90,628 +129,193 @@ const CustomTable = () => {
       headerName: "Fund Name",
       width: 200,
       editable: true,
-      renderCell: (params) => (
-        <div
-          style={{
-            whiteSpace: "normal",
-            overflowWrap: "break-word",
-            wordBreak: "break-all",
-            padding: "4px",
-            boxSizing: "border-box",
-          }}
-        >
-          {params.value}
-          <br />
-          <button className="edit_btn" onClick={() => openModal(params.row)}>
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-        </div>
-      ),
+      renderCell: renderCellWithEditButton,
     },
     {
       field: "brief_description",
       headerName: "Description",
       width: 200,
       editable: true,
-      renderCell: (params) => (
-        <div
-          style={{
-            whiteSpace: "normal",
-            overflowWrap: "break-word",
-            wordBreak: "break-all",
-            padding: "4px",
-            boxSizing: "border-box",
-          }}
-        >
-          {params.value}
-          <br />
-          <button className="edit_btn" onClick={() => openModal(params.row)}>
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-        </div>
-      ),
+      renderCell: renderCellWithEditButton,
     },
     {
       field: "hq_location",
       headerName: "Location",
       width: 200,
       editable: true,
-      renderCell: (params) => (
-        <div
-          style={{
-            whiteSpace: "normal",
-            overflowWrap: "break-word",
-            wordBreak: "break-all",
-            padding: "4px",
-            boxSizing: "border-box",
-          }}
-        >
-          {params.value}
-          <br />
-          <button className="edit_btn" onClick={() => openModal(params.row)}>
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-        </div>
-      ),
+      renderCell: renderCellWithEditButton,
     },
     {
       field: "investor_type",
       headerName: "Investor Type",
       width: 200,
       editable: true,
-      renderCell: (params) => (
-        <div
-          style={{
-            whiteSpace: "normal",
-            overflowWrap: "break-word",
-            wordBreak: "break-all",
-            padding: "4px",
-            boxSizing: "border-box",
-          }}
-        >
-          {params.value}
-          <br />
-          <button className="edit_btn" onClick={() => openModal(params.row)}>
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-        </div>
-      ),
+      renderCell: renderCellWithEditButton,
     },
     {
       field: "equity_or_debt",
       headerName: "Equity / Debt",
       width: 200,
       editable: true,
-      renderCell: (params) => (
-        <div
-          style={{
-            whiteSpace: "normal",
-            overflowWrap: "break-word",
-            wordBreak: "break-all",
-            padding: "4px",
-            boxSizing: "border-box",
-          }}
-        >
-          {params.value}
-          <br />
-          <button className="edit_btn" onClick={() => openModal(params.row)}>
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-        </div>
-      ),
+      renderCell: renderCellWithEditButton,
     },
     {
       field: "stages_of_entry_investment",
       headerName: "Stages of Investment",
       width: 200,
       editable: true,
-      renderCell: (params) => (
-        <div
-          style={{
-            whiteSpace: "normal",
-            overflowWrap: "break-word",
-            wordBreak: "break-all",
-            padding: "4px",
-            boxSizing: "border-box",
-          }}
-        >
-          {params.value}
-          <br />
-          <button className="edit_btn" onClick={() => openModal(params.row)}>
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-        </div>
-      ),
+      renderCell: renderCellWithEditButton,
     },
     {
       field: "sectors_of_investment",
       headerName: "Sectors of Investment",
       width: 200,
       editable: true,
-      renderCell: (params) => (
-        <div
-          style={{
-            whiteSpace: "normal",
-            overflowWrap: "break-word",
-            wordBreak: "break-all",
-            padding: "4px",
-            boxSizing: "border-box",
-          }}
-        >
-          {params.value}
-          <br />
-          <button className="edit_btn" onClick={() => openModal(params.row)}>
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-        </div>
-      ),
+      renderCell: renderCellWithEditButton,
     },
     {
       field: "geographies_invested_in",
       headerName: "Geographies Invested In",
       width: 200,
       editable: true,
-      renderCell: (params) => (
-        <div
-          style={{
-            whiteSpace: "normal",
-            overflowWrap: "break-word",
-            wordBreak: "break-all",
-            padding: "4px",
-            boxSizing: "border-box",
-          }}
-        >
-          {params.value}
-          <br />
-          <button className="edit_btn" onClick={() => openModal(params.row)}>
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-        </div>
-      ),
+      renderCell: renderCellWithEditButton,
     },
     {
       field: "portfolio_companies",
       headerName: "Portfolio Companies",
       width: 200,
       editable: true,
-      renderCell: (params) => (
-        <div
-          style={{
-            whiteSpace: "normal",
-            overflowWrap: "break-word",
-            wordBreak: "break-all",
-            padding: "4px",
-            boxSizing: "border-box",
-          }}
-        >
-          {params.value}
-          <br />
-          <button className="edit_btn" onClick={() => openModal(params.row)}>
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-        </div>
-      ),
+      renderCell: renderCellWithEditButton,
     },
     {
       field: "no_of_exits",
       headerName: "No. of Exits",
       width: 200,
       editable: true,
-      renderCell: (params) => (
-        <div
-          style={{
-            whiteSpace: "normal",
-            overflowWrap: "break-word",
-            wordBreak: "break-all",
-            padding: "4px",
-            boxSizing: "border-box",
-          }}
-        >
-          {params.value}
-          <br />
-          <button className="edit_btn" onClick={() => openModal(params.row)}>
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-        </div>
-      ),
+      renderCell: renderCellWithEditButton,
     },
     {
       field: "portfolio_acquisitions",
       headerName: "Portfolio Acquisitions",
       width: 200,
       editable: true,
-      renderCell: (params) => (
-        <div
-          style={{
-            whiteSpace: "normal",
-            overflowWrap: "break-word",
-            wordBreak: "break-all",
-            padding: "4px",
-            boxSizing: "border-box",
-          }}
-        >
-          {params.value}
-          <br />
-          <button className="edit_btn" onClick={() => openModal(params.row)}>
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-        </div>
-      ),
+      renderCell: renderCellWithEditButton,
     },
     {
       field: "website",
       headerName: "Website",
       width: 200,
       editable: true,
-      renderCell: (params) => (
-        <div
-          style={{
-            whiteSpace: "normal",
-            overflowWrap: "break-word",
-            wordBreak: "break-all",
-            padding: "4px",
-            boxSizing: "border-box",
-          }}
-        >
-          {params.value}
-          <br />
-          <button className="edit_btn" onClick={() => openModal(params.row)}>
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-        </div>
-      ),
+      renderCell: renderCellWithEditButton,
     },
     {
       field: "portfolio_unicorns_or_soonicorns",
       headerName: "Portfolio Unicorns / Soonicorns",
       width: 200,
       editable: true,
-      renderCell: (params) => (
-        <div
-          style={{
-            whiteSpace: "normal",
-            overflowWrap: "break-word",
-            wordBreak: "break-all",
-            padding: "4px",
-            boxSizing: "border-box",
-          }}
-        >
-          {params.value}
-          <br />
-          <button className="edit_btn" onClick={() => openModal(params.row)}>
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-        </div>
-      ),
+      renderCell: renderCellWithEditButton,
     },
     {
       field: "portfolio_exits",
       headerName: "Portfolio Exits",
       width: 200,
       editable: true,
-      renderCell: (params) => (
-        <div
-          style={{
-            whiteSpace: "normal",
-            overflowWrap: "break-word",
-            wordBreak: "break-all",
-            padding: "4px",
-            boxSizing: "border-box",
-          }}
-        >
-          {params.value}
-          <br />
-          <button className="edit_btn" onClick={() => openModal(params.row)}>
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-        </div>
-      ),
+      renderCell: renderCellWithEditButton,
     },
     {
       field: "operating_status",
       headerName: "Operating Status",
       width: 200,
       editable: true,
-      renderCell: (params) => (
-        <div
-          style={{
-            whiteSpace: "normal",
-            overflowWrap: "break-word",
-            wordBreak: "break-all",
-            padding: "4px",
-            boxSizing: "border-box",
-          }}
-        >
-          {params.value}
-          <br />
-          <button className="edit_btn" onClick={() => openModal(params.row)}>
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-        </div>
-      ),
+      renderCell: renderCellWithEditButton,
     },
     {
       field: "deals_in_last_12_months",
       headerName: "Deals in last 12 months",
       width: 200,
       editable: true,
-      renderCell: (params) => (
-        <div
-          style={{
-            whiteSpace: "normal",
-            overflowWrap: "break-word",
-            wordBreak: "break-all",
-            padding: "4px",
-            boxSizing: "border-box",
-          }}
-        >
-          {params.value}
-          <br />
-          <button className="edit_btn" onClick={() => openModal(params.row)}>
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-        </div>
-      ),
+      renderCell: renderCellWithEditButton,
     },
     {
       field: "no_of_portfolio_companies_invested_in",
       headerName: "No of Portfolio Companies Invested In",
       width: 200,
       editable: true,
-      renderCell: (params) => (
-        <div
-          style={{
-            whiteSpace: "normal",
-            overflowWrap: "break-word",
-            wordBreak: "break-all",
-            padding: "4px",
-            boxSizing: "border-box",
-          }}
-        >
-          {params.value}
-          <br />
-          <button className="edit_btn" onClick={() => openModal(params.row)}>
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-        </div>
-      ),
+      renderCell: renderCellWithEditButton,
     },
     {
       field: "size_of_the_fund",
       headerName: "Fund Size",
       width: 200,
       editable: true,
-      renderCell: (params) => (
-        <div
-          style={{
-            whiteSpace: "normal",
-            overflowWrap: "break-word",
-            wordBreak: "break-all",
-            padding: "4px",
-            boxSizing: "border-box",
-          }}
-        >
-          {params.value}
-          <br />
-          <button className="edit_btn" onClick={() => openModal(params.row)}>
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-        </div>
-      ),
+      renderCell: renderCellWithEditButton,
     },
     {
       field: "founded_year",
       headerName: "Founded Year",
       width: 200,
       editable: true,
-      renderCell: (params) => (
-        <div
-          style={{
-            whiteSpace: "normal",
-            overflowWrap: "break-word",
-            wordBreak: "break-all",
-            padding: "4px",
-            boxSizing: "border-box",
-          }}
-        >
-          {params.value}
-          <br />
-          <button className="edit_btn" onClick={() => openModal(params.row)}>
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-        </div>
-      ),
+      renderCell: renderCellWithEditButton,
     },
     {
       field: "team_size",
       headerName: "Team Size",
       width: 200,
       editable: true,
-      renderCell: (params) => (
-        <div
-          style={{
-            whiteSpace: "normal",
-            overflowWrap: "break-word",
-            wordBreak: "break-all",
-            padding: "4px",
-            boxSizing: "border-box",
-          }}
-        >
-          {params.value}
-          <br />
-          <button className="edit_btn" onClick={() => openModal(params.row)}>
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-        </div>
-      ),
+      renderCell: renderCellWithEditButton,
     },
     {
       field: "group_email_id_email_id",
       headerName: "Group Email ID",
       width: 200,
       editable: true,
-      renderCell: (params) => (
-        <div
-          style={{
-            whiteSpace: "normal",
-            overflowWrap: "break-word",
-            wordBreak: "break-all",
-            padding: "4px",
-            boxSizing: "border-box",
-          }}
-        >
-          {params.value}
-          <br />
-          <button className="edit_btn" onClick={() => openModal(params.row)}>
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-        </div>
-      ),
+      renderCell: renderCellWithEditButton,
     },
     {
       field: "contact_number",
       headerName: "Phone Number",
       width: 200,
       editable: true,
-      renderCell: (params) => (
-        <div
-          style={{
-            whiteSpace: "normal",
-            overflowWrap: "break-word",
-            wordBreak: "break-all",
-            padding: "4px",
-            boxSizing: "border-box",
-          }}
-        >
-          {params.value}
-          <br />
-          <button className="edit_btn" onClick={() => openModal(params.row)}>
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-        </div>
-      ),
+      renderCell: renderCellWithEditButton,
     },
-    { field: "linkedin", headerName: "LinkedIn", width: 200, editable: true },
+    {
+      field: "linkedin",
+      headerName: "LinkedIn",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
     {
       field: "twitter",
       headerName: "Twitter",
       width: 200,
       editable: true,
-      renderCell: (params) => (
-        <div
-          style={{
-            whiteSpace: "normal",
-            overflowWrap: "break-word",
-            wordBreak: "break-all",
-            padding: "4px",
-            boxSizing: "border-box",
-          }}
-        >
-          {params.value}
-          <br />
-          <button className="edit_btn" onClick={() => openModal(params.row)}>
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-        </div>
-      ),
+      renderCell: renderCellWithEditButton,
     },
     {
       field: "youtube",
       headerName: "Youtube",
       width: 200,
       editable: true,
-      renderCell: (params) => (
-        <div
-          style={{
-            whiteSpace: "normal",
-            overflowWrap: "break-word",
-            wordBreak: "break-all",
-            padding: "4px",
-            boxSizing: "border-box",
-          }}
-        >
-          {params.value}
-          <br />
-          <button className="edit_btn" onClick={() => openModal(params.row)}>
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-        </div>
-      ),
+      renderCell: renderCellWithEditButton,
     },
-    // {
-    //   field: "instagram",
-    //   headerName: "Instagram",
-    //   width: 200,
-    //   editable: true,
-    //   renderCell: (params) => (
-    //     <div
-    //       style={{
-    //         whiteSpace: "normal",
-    //         overflowWrap: "break-word",
-    //         wordBreak: "break-all",
-    //         padding: "4px",
-    //         boxSizing: "border-box",
-    //       }}
-    //     >
-    //       {params.value}
-    //       <br />
-    //       <button className="edit_btn" onClick={() => openModal(params.row)}>
-    //         <i class="fa-solid fa-pen-to-square"></i>
-    //       </button>
-    //     </div>
-    //   ),
-    // },
     {
       field: "founders",
       headerName: "Founders",
       width: 200,
       editable: true,
-      renderCell: (params) => (
-        <div
-          style={{
-            whiteSpace: "normal",
-            overflowWrap: "break-word",
-            wordBreak: "break-all",
-            padding: "4px",
-            boxSizing: "border-box",
-          }}
-        >
-          {params.value}
-          <br />
-          <button className="edit_btn" onClick={() => openModal(params.row)}>
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-        </div>
-      ),
+      renderCell: renderCellWithEditButton,
     },
     {
       field: "tags_or_keywords",
       headerName: "Tags / Keywords",
       width: 200,
       editable: true,
-      renderCell: (params) => (
-        <div
-          style={{
-            whiteSpace: "normal",
-            overflowWrap: "break-word",
-            wordBreak: "break-all",
-            padding: "4px",
-            boxSizing: "border-box",
-          }}
-        >
-          {params.value}
-          <br />
-          <button className="edit_btn" onClick={() => openModal(params.row)}>
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-        </div>
-      ),
+      renderCell: renderCellWithEditButton,
     },
   ];
 
-  const getRowHeight = (params) => {
-    return "auto";
-  };
+  const getRowHeight = () => "auto";
 
   return (
     <div className="company-grid-container">
@@ -725,6 +329,9 @@ const CustomTable = () => {
         onChange={handleSearch}
         className="search-input"
       />
+      <button onClick={downloadExcel} className="download-button">
+        Download Excel
+      </button>
       {isLoading ? (
         <p>Loading...</p>
       ) : (
@@ -737,7 +344,7 @@ const CustomTable = () => {
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: 10,
+                  pageSize: 20,
                 },
               },
             }}
@@ -753,7 +360,7 @@ const CustomTable = () => {
             type="text"
             className="modal_input"
             value={modalInputValue}
-            onChange={(e) => setModalInputValue(e.target.value)} // Track input changes
+            onChange={(e) => setModalInputValue(e.target.value)}
           />
           <label htmlFor="manual-input">Enter manual value</label>
           <input
@@ -761,7 +368,7 @@ const CustomTable = () => {
             className="modal_input"
             id="manual-input"
             value={manualAns}
-            onChange={(e) => setManualAns(e.target.value)} // Track input changes
+            onChange={(e) => setManualAns(e.target.value)}
           />
           <button onClick={handleUpdate}>Update</button>
         </div>

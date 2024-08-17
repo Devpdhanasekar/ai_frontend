@@ -8,7 +8,7 @@ import { DataGrid } from "@mui/x-data-grid";
 const CompanyGrid = () => {
   const [location, setLocation] = useState("");
   const [query, setQuery] = useState("");
-  const [pageCount, setPageCount] = useState(10);
+  const [pageCount, setPageCount] = useState(20);
   const [expandedRow, setExpandedRow] = useState(null);
   const [companies, setCompanies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -102,7 +102,7 @@ const CompanyGrid = () => {
 
     let configuration = {
       method: "POST",
-      url: "http://13.234.226.175.108.164.120:8080/webscrap",
+      url: "http://13.234.217.17:8080/webscrap",
       headers: {
         "Content-Type": "application/json",
       },
@@ -269,7 +269,7 @@ const CompanyGrid = () => {
               initialState={{
                 pagination: {
                   paginationModel: {
-                    pageSize: 10,
+                    pageSize: 20,
                   },
                 },
               }}
