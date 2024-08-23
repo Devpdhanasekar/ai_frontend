@@ -244,11 +244,11 @@ const CompanyGrid = () => {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
-        <button onClick={handleNavigate} className="view_all_btn">
-          View all
-        </button>
         <button onClick={handleOnClick} disabled={isLoading}>
           {isLoading ? "Loading..." : "Search"}
+        </button>
+        <button onClick={handleNavigate} className="view_all_btn">
+          View all
         </button>
       </div>
       {isLoading ? (

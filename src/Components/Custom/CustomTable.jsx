@@ -355,6 +355,7 @@ const CustomTable = () => {
         </Box>
       )}
       <Modal isOpen={isModalOpen} onClose={closeModal} field={selectedField}>
+        <label htmlFor="manual-input">Enter URL</label>
         <div className="modal_outline">
           <textarea
             type="text"
