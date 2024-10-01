@@ -84,7 +84,7 @@ const CompanyGrid = () => {
   const navigate = useNavigate();
 
   const handleNavigate = () => {
-    navigate("/details");
+    navigate("/dashboard");
   };
 
   const handleCheckboxChange = (company) => {

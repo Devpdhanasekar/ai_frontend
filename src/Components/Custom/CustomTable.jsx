@@ -50,15 +50,18 @@ const CustomTable = () => {
     fetchData();
   }, []);
 
-  const handleUpdate = async () => {
+  const handleUpdate = async (isFlag = false) => {
     try {
       const payloadData = {
         context: selectedField,
         base_url: selectedRow.website,
         url: modalInputValue,
         user_answer: manualAns,
+        isFlage: isFlag,
+        name: selectedRow.fund_name,
       };
       const endpoint = manualAns === "" ? "update" : "updateManual";
+      console.log(endpoint);
       const response = await axios.post(
         `http://13.234.217.17:8080/${endpoint}`,
         payloadData
@@ -98,6 +101,18 @@ const CustomTable = () => {
     link.download = "companies.xlsx";
     link.click();
   };
+  const allowedFieldsForAIUpdate = [
+    "fund_size",
+    "deals_in_last_12_months",
+    "team_size",
+    "equity_or_debt",
+    "sectors_of_investment",
+    "founded_year",
+    "operating_status",
+    "linkedin",
+    "youtube",
+    "twitter",
+  ];
 
   const renderCellWithEditButton = (params) => (
     <div
@@ -355,6 +370,10 @@ const CustomTable = () => {
         </Box>
       )}
       <Modal isOpen={isModalOpen} onClose={closeModal} field={selectedField}>
+        {allowedFieldsForAIUpdate.includes(selectedField) && (
+          <button onClick={(e) => handleUpdate(true)}>Update from AI</button>
+        )}
+        <br />
         <label htmlFor="manual-input">Enter URL</label>
         <div className="modal_outline">
           <textarea
@@ -371,7 +390,7 @@ const CustomTable = () => {
             value={manualAns}
             onChange={(e) => setManualAns(e.target.value)}
           />
-          <button onClick={handleUpdate}>Update</button>
+          <button onClick={() => handleUpdate()}>Update</button>
         </div>
       </Modal>
     </div>
