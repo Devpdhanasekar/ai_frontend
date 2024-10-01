@@ -1,9 +1,15 @@
-import axios from "axios";
 import React, { useState, useEffect } from "react";
-import "./CompanyGrid.css";
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import Box from "@mui/material/Box";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
+import "./CompanyGrid.css";
 
 const CompanyGrid = () => {
   const [location, setLocation] = useState("");
@@ -13,11 +19,12 @@ const CompanyGrid = () => {
   const [companies, setCompanies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedCompanies, setSelectedCompanies] = useState([]);
+  const [openModal, setOpenModal] = useState(true); // State for the popup modal
 
-  console.log(selectedCompanies);
   const toggleExpand = (id) => {
     setExpandedRow(expandedRow === id ? null : id);
   };
+
   useEffect(() => {
     setCompanies(JSON.parse(localStorage.getItem("companies")));
   }, []);
@@ -53,7 +60,6 @@ const CompanyGrid = () => {
 
   const getLLMData = async (company) => {
     console.log(company);
-    // setExpandedRow(company.position);
     let configuration = {
       method: "POST",
       url: "http://13.234.217.17:8080/initialDataScrape",
@@ -121,6 +127,10 @@ const CompanyGrid = () => {
     }
   };
 
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
   const columns = [
     {
       field: "checkbox",
@@ -129,7 +139,6 @@ const CompanyGrid = () => {
       renderCell: (params) => (
         <input
           type="checkbox"
-          // checked={selectedCompanies.includes(params.row.id)}
           onChange={() => handleCheckboxChange(params.row)}
         />
       ),
@@ -231,6 +240,31 @@ const CompanyGrid = () => {
 
   return (
     <div className="company-grid-container">
+      {/* Modal Popup for Retraing Warning */}
+      <Dialog
+        open={openModal}
+        onClose={handleCloseModal}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Ongoing Angel Investors Process"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Angel investors model retraining and environment building are in
+            progress. Please avoid interacting with angel investor-related
+            functionalities during this process.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModal} autoFocus>
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Search and Button Inputs */}
       <div className="input-container">
         <input
           type="text"
@@ -251,6 +285,8 @@ const CompanyGrid = () => {
           View all
         </button>
       </div>
+
+      {/* Data Grid */}
       {isLoading ? (
         <div className="loader">Loading...</div>
       ) : (
@@ -274,7 +310,6 @@ const CompanyGrid = () => {
                 },
               }}
               pageSizeOptions={[5]}
-              // checkboxSelection
               disableRowSelectionOnClick
               getRowHeight={getRowHeight}
             />
