@@ -38,7 +38,7 @@ const CompanyGrid = () => {
     };
     let configuration = {
       method: "POST",
-      url: "http://13.126.64.59:8080/googlemap",
+      url: "http://13.126.64.59:443/googlemap",
       headers: {
         "Content-Type": "application/json",
       },
@@ -62,7 +62,7 @@ const CompanyGrid = () => {
     console.log(company);
     let configuration = {
       method: "POST",
-      url: "http://13.126.64.59:8080/initialDataScrape",
+      url: "http://13.126.64.59:443/initialDataScrape",
       headers: {
         "Content-Type": "application/json",
       },
@@ -108,7 +108,7 @@ const CompanyGrid = () => {
 
     let configuration = {
       method: "POST",
-      url: "http://13.126.64.59:8080/webscrap",
+      url: "http://13.126.64.59:443/webscrap",
       headers: {
         "Content-Type": "application/json",
       },
