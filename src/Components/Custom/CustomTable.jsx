@@ -36,7 +36,7 @@ const CustomTable = () => {
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get("http://13.126.64.59:443/investment");
+      const response = await axios.get("http://13.126.64.59:8080/investment");
       console.log(response.data);
       setCompanies(response.data);
     } catch (error) {
@@ -63,7 +63,7 @@ const CustomTable = () => {
       const endpoint = manualAns === "" ? "update" : "updateManual";
       console.log(endpoint);
       const response = await axios.post(
-        `http://13.126.64.59:443/${endpoint}`,
+        `http://13.126.64.59:8080/${endpoint}`,
         payloadData
       );
       console.log(response.data);
