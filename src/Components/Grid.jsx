@@ -18,6 +18,8 @@ const CompanyGrid = () => {
   const [expandedRow, setExpandedRow] = useState(null);
   const [companies, setCompanies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFieldLoading, setIsFieldLoading] = useState({});
+  const [currentTitle, setCurrentTitle] = useState("");
   const [selectedCompanies, setSelectedCompanies] = useState([]);
   const [openModal, setOpenModal] = useState(true); // State for the popup modal
 
@@ -33,7 +35,7 @@ const CompanyGrid = () => {
     setIsLoading(true);
     let payloadData = {
       location: location,
-      query: query,
+      query: query + " in " + location,
       pageCount: pageCount,
     };
     let configuration = {
@@ -47,9 +49,25 @@ const CompanyGrid = () => {
     try {
       let fetchData = await axios(configuration);
       if (fetchData.status === 200) {
-        console.log(fetchData.data);
-        setCompanies(fetchData.data);
-        localStorage.setItem("companies", JSON.stringify(fetchData.data));
+        // Remove duplicates from fetchData.data based on specific fields (e.g., title and address)
+        const uniqueData = fetchData.data.reduce(
+          (acc, current) => {
+            console.log(current.title);
+            const identifier = `${current.title}_${current.address}`;
+
+            // Check if the item already exists in the map
+            if (!acc.map.has(identifier)) {
+              acc.map.set(identifier, true);
+              acc.list.push(current);
+            }
+            return acc;
+          },
+          { map: new Map(), list: [] }
+        ).list;
+
+        console.log(uniqueData);
+        setCompanies(uniqueData);
+        localStorage.setItem("companies", JSON.stringify(uniqueData));
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -59,7 +77,10 @@ const CompanyGrid = () => {
   };
 
   const getLLMData = async (company) => {
+    setIsFieldLoading((prev) => ({ ...prev, [company.data_id]: true }));
     console.log(company);
+    console.log(isFieldLoading);
+    console.log(currentTitle);
     let configuration = {
       method: "POST",
       url: "http://13.126.64.59:8080/initialDataScrape",
@@ -77,13 +98,15 @@ const CompanyGrid = () => {
             ? investorData.data.message
             : "Data scraped successfully"
         );
+        setIsFieldLoading((prev) => ({ ...prev, [company.data_id]: false }));
       } else {
+        setIsFieldLoading((prev) => ({ ...prev, [company.data_id]: false }));
         alert("Please try again");
       }
     } catch (error) {
       console.error("Error scraping data:", error);
     } finally {
-      setIsLoading(false);
+      setIsFieldLoading((prev) => ({ ...prev, [company.data_id]: false }));
     }
   };
 
@@ -224,11 +247,9 @@ const CompanyGrid = () => {
         <button
           className="list_scrap_button"
           onClick={() => getLLMData(params.row)}
-          disabled={isLoading}
+          disabled={isFieldLoading[params.row.data_id]}
         >
-          {isLoading && expandedRow === params.row.position
-            ? "Loading..."
-            : "Scrap Data"}
+          {isFieldLoading[params.row.data_id] ? "Loading..." : "Scrap Data"}
         </button>
       ),
     },
