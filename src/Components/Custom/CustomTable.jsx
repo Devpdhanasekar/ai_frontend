@@ -40,7 +40,9 @@ const CustomTable = () => {
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get("http://54.90.198.188:8080/investment");
+      const response = await axios.get(
+        "https://mohur-ai.onrender.com/investment"
+      );
       console.log(response.data);
       setCompanies(response.data);
     } catch (error) {
@@ -82,7 +84,7 @@ const CustomTable = () => {
       const endpoint = manualAns === "" ? "update" : "updateManual";
       console.log(endpoint);
       const response = await axios.post(
-        `http://54.90.198.188:8080/${endpoint}`,
+        `https://mohur-ai.onrender.com/${endpoint}`,
         payloadData
       );
       console.log(response.data);

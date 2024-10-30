@@ -40,7 +40,7 @@ const CompanyGrid = () => {
     };
     let configuration = {
       method: "POST",
-      url: "http://54.90.198.188:8080/googlemap",
+      url: "https://mohur-ai.onrender.com/googlemap",
       headers: {
         "Content-Type": "application/json",
       },
@@ -83,7 +83,7 @@ const CompanyGrid = () => {
     console.log(currentTitle);
     let configuration = {
       method: "POST",
-      url: "http://54.90.198.188:8080/initialDataScrape",
+      url: "https://mohur-ai.onrender.com/initialDataScrape",
       headers: {
         "Content-Type": "application/json",
       },
@@ -131,7 +131,7 @@ const CompanyGrid = () => {
 
     let configuration = {
       method: "POST",
-      url: "http://54.90.198.188:8080/webscrap",
+      url: "https://mohur-ai.onrender.com/webscrap",
       headers: {
         "Content-Type": "application/json",
       },
