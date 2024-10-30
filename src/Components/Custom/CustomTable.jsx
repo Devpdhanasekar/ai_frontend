@@ -1,11 +1,13 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import "./my.css";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import Modal from "./Modal";
 import { Link } from "react-router-dom";
 import * as XLSX from "xlsx";
+import Chatbot from "../ChatBot/ChatBot";
 
 const CustomTable = () => {
   const [companies, setCompanies] = useState([]);
@@ -16,6 +18,8 @@ const CustomTable = () => {
   const [modalInputValue, setModalInputValue] = useState("");
   const [selectedField, setSelectedField] = useState(null);
   const [manualAns, setManualAns] = useState("");
+  const currentContext = useLocation();
+  const [activeColumns, setActiveColumns] = useState([]);
 
   const openModal = (rowData) => {
     setSelectedRow(rowData);
@@ -36,7 +40,7 @@ const CustomTable = () => {
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get("http://13.126.64.59:8080/investment");
+      const response = await axios.get("http://54.90.198.188:8080/investment");
       console.log(response.data);
       setCompanies(response.data);
     } catch (error) {
@@ -47,8 +51,23 @@ const CustomTable = () => {
   };
 
   useEffect(() => {
-    fetchData();
+    fetchData().then(() => {
+      if (currentContext.state.route === "angel") {
+        filterForAngel();
+      }
+    });
+    setActiveColumns(
+      currentContext.state.route === "angel" ? angelNetworkColumns : columns
+    );
   }, []);
+
+  const filterForAngel = () => {
+    const filteredCompanies = companies.filter(
+      (company) => +company.investor_type.contains("angel")
+    );
+    console.log("filteredCompanies", filteredCompanies);
+    setCompanies(filteredCompanies);
+  };
 
   const handleUpdate = async (isFlag = false) => {
     try {
@@ -63,7 +82,7 @@ const CustomTable = () => {
       const endpoint = manualAns === "" ? "update" : "updateManual";
       console.log(endpoint);
       const response = await axios.post(
-        `http://13.126.64.59:8080/${endpoint}`,
+        `http://54.90.198.188:8080/${endpoint}`,
         payloadData
       );
       console.log(response.data);
@@ -105,10 +124,10 @@ const CustomTable = () => {
     "fund_size",
     "deals_in_last_12_months",
     "team_size",
-    "equity_or_debt",
+    "equity_debt_fund_category",
     "sectors_of_investment",
     "founded_year",
-    "operating_status",
+    "operating_status_active_deadpooled_etc",
     "linkedin",
     "youtube",
     "twitter",
@@ -168,7 +187,7 @@ const CustomTable = () => {
       renderCell: renderCellWithEditButton,
     },
     {
-      field: "equity_or_debt",
+      field: "equity_debt_fund_category",
       headerName: "Equity / Debt",
       width: 200,
       editable: true,
@@ -238,7 +257,7 @@ const CustomTable = () => {
       renderCell: renderCellWithEditButton,
     },
     {
-      field: "operating_status",
+      field: "operating_status_active_deadpooled_etc",
       headerName: "Operating Status",
       width: 200,
       editable: true,
@@ -322,8 +341,206 @@ const CustomTable = () => {
       renderCell: renderCellWithEditButton,
     },
     {
-      field: "tags_or_keywords",
+      field: "tags_keywords",
       headerName: "Tags / Keywords",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+  ];
+  const angelNetworkColumns = [
+    {
+      field: "fund_name",
+      headerName: "Fund Name",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "brief_description",
+      headerName: "Brief Description",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "hq_location",
+      headerName: "HQ Location",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "investor_type",
+      headerName: "Investor Type",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "equity_debt_fund_category",
+      headerName: "Equity / Debt",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "stages_of_entry_investment",
+      headerName: "Stages of Entry/Investment",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "sectors_of_investment",
+      headerName: "Sectors of Investment",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "geographies_invested_in",
+      headerName: "Geographies Invested In",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "portfolio_companies",
+      headerName: "Portfolio Companies",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "no_of_exits",
+      headerName: "No. of Exits",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "portfolio_acquisitions",
+      headerName: "Portfolio Acquisitions",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "website",
+      headerName: "Website",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "program_link",
+      headerName: "Program Link",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "portfolio_unicorns_soonicorns",
+      headerName: "Portfolio Unicorns/Soonicorns",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "portfolio_exits",
+      headerName: "Portfolio Exits",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "operating_status_active_deadpooled_etc",
+      headerName: "Operating Status",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "deals_in_last_12_months",
+      headerName: "Deals in last 12 months",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "size_of_the_fund",
+      headerName: "Size of the Fund",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "founded_year",
+      headerName: "Founded Year",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "team_size",
+      headerName: "Team Size",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "group_email_id_email_id",
+      headerName: "Group Email ID",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "contact_number",
+      headerName: "Phone Number",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "linkedin",
+      headerName: "LinkedIn",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "twitter",
+      headerName: "Twitter (X)",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "fund_manager",
+      headerName: "Fund Manager",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "co_investors",
+      headerName: "Co-Investors",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "founders",
+      headerName: "Founders",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "tags_keywords",
+      headerName: "Tags/Keywords",
       width: 200,
       editable: true,
       renderCell: renderCellWithEditButton,
@@ -354,7 +571,7 @@ const CustomTable = () => {
           <DataGrid
             onCellClick={handleCellClick}
             rows={filteredCompanies}
-            columns={columns}
+            columns={activeColumns}
             getRowId={(row) => row?._id?.$oid}
             initialState={{
               pagination: {
@@ -393,6 +610,7 @@ const CustomTable = () => {
           <button onClick={() => handleUpdate()}>Update</button>
         </div>
       </Modal>
+      <Chatbot />
     </div>
   );
 };
