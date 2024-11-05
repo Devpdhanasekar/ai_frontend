@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Box from "@mui/material/Box";
 import Dialog from "@mui/material/Dialog";
+import CircularProgress from "@mui/material/CircularProgress";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
@@ -82,13 +83,14 @@ const CompanyGrid = () => {
   };
   const handleScrapeAdvanced = async () => {
     try {
+      setIsLoading(true);
       const domain = advancedUrl.replace(/(^\w+:|^)\/\//, "");
       const response = {
         website: advancedUrl,
         type: investorType,
-        title: domain.split(".")[0],
+        title: domain.split(".")[1],
       };
-      getLLMData(response);
+      getLLMData(response).then(() => setIsLoading(false));
     } catch (error) {
       console.error("Error in advanced scrape:", error);
     } finally {
@@ -378,15 +380,22 @@ const CompanyGrid = () => {
       </div>
 
       {/* Data Grid */}
-      <Box sx={{ height: 400, width: "100%" }}>
-        <DataGrid
-          rows={companies}
-          columns={columns}
-          getRowId={(row) => row?.data_id}
-          pageSizeOptions={[5]}
-          disableRowSelectionOnClick
-        />
-      </Box>
+
+      {!isLoading ? (
+        <Box sx={{ height: 400, width: "100%" }}>
+          <DataGrid
+            rows={companies}
+            columns={columns}
+            getRowId={(row) => row?.data_id}
+            pageSizeOptions={[5]}
+            disableRowSelectionOnClick
+          />
+        </Box>
+      ) : (
+        <div className="loading-container">
+          <CircularProgress />
+        </div>
+      )}
     </div>
   );
 };

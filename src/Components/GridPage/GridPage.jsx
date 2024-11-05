@@ -13,7 +13,7 @@ const GridPage = () => {
   return (
     <div className="grid-container">
       <div className="grid-item" onClick={() => handleNavigate("vc")}>
-        VM Investors
+        VC Investors
       </div>
       <div className="grid-item" onClick={() => handleNavigate("angel")}>
         Angel Networks

@@ -4,6 +4,15 @@
     margin: 0 auto;
     padding: 20px;
   }
+    .loading-container {
+      display: flex;
+      justify-content: center;
+      /* Centers horizontally */
+      align-items: center;
+      /* Centers vertically */
+      height: 100vh;
+      /* Ensures the container takes full viewport height */
+    }
   
   .input-container {
     display: flex;
