@@ -7,6 +7,8 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
 import { useNavigate } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 import "./CompanyGrid.css";
@@ -22,6 +24,9 @@ const CompanyGrid = () => {
   const [currentTitle, setCurrentTitle] = useState("");
   const [selectedCompanies, setSelectedCompanies] = useState([]);
   const [openModal, setOpenModal] = useState(true); // State for the popup modal
+  const [openAdvancedModal, setOpenAdvancedModal] = useState(false); // State for advanced options modal
+  const [advancedUrl, setAdvancedUrl] = useState(""); // URL input for advanced modal
+  const [investorType, setInvestorType] = useState(""); // Investor type for advanced modal
 
   const toggleExpand = (id) => {
     setExpandedRow(expandedRow === id ? null : id);
@@ -73,6 +78,21 @@ const CompanyGrid = () => {
       console.error("Error fetching data:", error);
     } finally {
       setIsLoading(false);
+    }
+  };
+  const handleScrapeAdvanced = async () => {
+    try {
+      const domain = advancedUrl.replace(/(^\w+:|^)\/\//, "");
+      const response = {
+        website: advancedUrl,
+        type: investorType,
+        title: domain.split(".")[0],
+      };
+      getLLMData(response);
+    } catch (error) {
+      console.error("Error in advanced scrape:", error);
+    } finally {
+      setOpenAdvancedModal(false);
     }
   };
 
@@ -148,6 +168,13 @@ const CompanyGrid = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+  const handleOpenAdvancedModal = () => {
+    setOpenAdvancedModal(true);
+  };
+
+  const handleCloseAdvancedModal = () => {
+    setOpenAdvancedModal(false);
   };
 
   const handleCloseModal = () => {
@@ -261,10 +288,10 @@ const CompanyGrid = () => {
 
   return (
     <div className="company-grid-container">
-      {/* Modal Popup for Retraing Warning */}
+      {/* Modal Popup for Retraining Warning */}
       <Dialog
         open={openModal}
-        onClose={handleCloseModal}
+        onClose={() => setOpenModal(false)}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -279,13 +306,50 @@ const CompanyGrid = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseModal} autoFocus>
+          <Button onClick={() => setOpenModal(false)} autoFocus>
             OK
           </Button>
         </DialogActions>
       </Dialog>
 
-      {/* Search and Button Inputs */}
+      {/* Advanced Options Modal */}
+      <Dialog
+        open={openAdvancedModal}
+        onClose={handleCloseAdvancedModal}
+        aria-labelledby="advanced-dialog-title"
+      >
+        <DialogTitle id="advanced-dialog-title">Advanced Options</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Enter URL"
+            value={advancedUrl}
+            onChange={(e) => setAdvancedUrl(e.target.value)}
+            fullWidth
+            margin="dense"
+          />
+          <TextField
+            select
+            label="Investor Type"
+            value={investorType}
+            onChange={(e) => setInvestorType(e.target.value)}
+            fullWidth
+            margin="dense"
+          >
+            <MenuItem value="vc_investor">VC Investor</MenuItem>
+            <MenuItem value="angel_investor">Angel Investor</MenuItem>
+          </TextField>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleScrapeAdvanced} color="primary">
+            Scrape
+          </Button>
+          <Button onClick={handleCloseAdvancedModal} color="secondary">
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Input Fields and Buttons */}
       <div className="input-container">
         <input
           type="text"
@@ -305,38 +369,24 @@ const CompanyGrid = () => {
         <button onClick={handleNavigate} className="view_all_btn">
           View all
         </button>
+        <button
+          onClick={handleOpenAdvancedModal}
+          className="advanced-options-btn"
+        >
+          Advanced Options
+        </button>
       </div>
 
       {/* Data Grid */}
-      {isLoading ? (
-        <div className="loader">Loading...</div>
-      ) : (
-        <>
-          <button
-            onClick={handleScrapeSelected}
-            disabled={selectedCompanies.length === 0 || isLoading}
-          >
-            {isLoading ? "Loading..." : "Scrape Selected"}
-          </button>
-          <Box sx={{ height: 400, width: "100%" }}>
-            <DataGrid
-              rows={companies}
-              columns={columns}
-              getRowId={(row) => row?.data_id}
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    pageSize: 20,
-                  },
-                },
-              }}
-              pageSizeOptions={[5]}
-              disableRowSelectionOnClick
-              getRowHeight={getRowHeight}
-            />
-          </Box>
-        </>
-      )}
+      <Box sx={{ height: 400, width: "100%" }}>
+        <DataGrid
+          rows={companies}
+          columns={columns}
+          getRowId={(row) => row?.data_id}
+          pageSizeOptions={[5]}
+          disableRowSelectionOnClick
+        />
+      </Box>
     </div>
   );
 };

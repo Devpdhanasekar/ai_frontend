@@ -73,6 +73,7 @@ const CustomTable = () => {
 
   const handleUpdate = async (isFlag = false) => {
     try {
+      console.log("response.data");
       const payloadData = {
         context: selectedField,
         base_url: selectedRow.website,
