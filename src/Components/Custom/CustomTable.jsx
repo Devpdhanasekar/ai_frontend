@@ -40,9 +40,7 @@ const CustomTable = () => {
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get(
-        "https://mohur-ai.onrender.com/investment"
-      );
+      const response = await axios.get("http://localhost:8080/investment");
       console.log(response.data);
       setCompanies(response.data);
     } catch (error) {
@@ -85,7 +83,7 @@ const CustomTable = () => {
       const endpoint = manualAns === "" ? "update" : "updateManual";
       console.log(endpoint);
       const response = await axios.post(
-        `https://mohur-ai.onrender.com/${endpoint}`,
+        `http://localhost:8080/${endpoint}`,
         payloadData
       );
       console.log(response.data);
@@ -176,13 +174,6 @@ const CustomTable = () => {
       renderCell: renderCellWithEditButton,
     },
     {
-      field: "hq_location",
-      headerName: "Location",
-      width: 200,
-      editable: true,
-      renderCell: renderCellWithEditButton,
-    },
-    {
       field: "investor_type",
       headerName: "Investor Type",
       width: 200,
@@ -192,13 +183,6 @@ const CustomTable = () => {
     {
       field: "equity_debt_fund_category",
       headerName: "Equity / Debt",
-      width: 200,
-      editable: true,
-      renderCell: renderCellWithEditButton,
-    },
-    {
-      field: "stages_of_entry_investment",
-      headerName: "Stages of Investment",
       width: 200,
       editable: true,
       renderCell: renderCellWithEditButton,
@@ -218,50 +202,15 @@ const CustomTable = () => {
       renderCell: renderCellWithEditButton,
     },
     {
-      field: "portfolio_companies",
-      headerName: "Portfolio Companies",
+      field: "size_of_the_fund",
+      headerName: "Fund Size",
       width: 200,
       editable: true,
       renderCell: renderCellWithEditButton,
     },
     {
-      field: "no_of_exits",
-      headerName: "No. of Exits",
-      width: 200,
-      editable: true,
-      renderCell: renderCellWithEditButton,
-    },
-    {
-      field: "portfolio_acquisitions",
-      headerName: "Portfolio Acquisitions",
-      width: 200,
-      editable: true,
-      renderCell: renderCellWithEditButton,
-    },
-    {
-      field: "website",
-      headerName: "Website",
-      width: 200,
-      editable: true,
-      renderCell: renderCellWithEditButton,
-    },
-    {
-      field: "portfolio_unicorns_or_soonicorns",
-      headerName: "Portfolio Unicorns / Soonicorns",
-      width: 200,
-      editable: true,
-      renderCell: renderCellWithEditButton,
-    },
-    {
-      field: "portfolio_exits",
-      headerName: "Portfolio Exits",
-      width: 200,
-      editable: true,
-      renderCell: renderCellWithEditButton,
-    },
-    {
-      field: "operating_status_active_deadpooled_etc",
-      headerName: "Operating Status",
+      field: "aum",
+      headerName: "AUM",
       width: 200,
       editable: true,
       renderCell: renderCellWithEditButton,
@@ -281,8 +230,29 @@ const CustomTable = () => {
       renderCell: renderCellWithEditButton,
     },
     {
-      field: "size_of_the_fund",
-      headerName: "Fund Size",
+      field: "portfolio_companies",
+      headerName: "Portfolio Companies",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "portfolio_unicorns_or_soonicorns",
+      headerName: "Portfolio Unicorns / Soonicorns",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "no_of_portfolio_acquisitions",
+      headerName: "No portfolio acquisitions",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "portfolio_acquisitions",
+      headerName: "Portfolio Acquisitions",
       width: 200,
       editable: true,
       renderCell: renderCellWithEditButton,
@@ -295,8 +265,22 @@ const CustomTable = () => {
       renderCell: renderCellWithEditButton,
     },
     {
+      field: "founders",
+      headerName: "Founders",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
       field: "team_size",
       headerName: "Team Size",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "website",
+      headerName: "Website",
       width: 200,
       editable: true,
       renderCell: renderCellWithEditButton,
@@ -323,6 +307,13 @@ const CustomTable = () => {
       renderCell: renderCellWithEditButton,
     },
     {
+      field: "instagram",
+      headerName: "Instagram",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
       field: "twitter",
       headerName: "Twitter",
       width: 200,
@@ -337,8 +328,22 @@ const CustomTable = () => {
       renderCell: renderCellWithEditButton,
     },
     {
-      field: "founders",
-      headerName: "Founders",
+      field: "portfolio_urls",
+      headerName: "portfolio_company_urls",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "stages_of_entry_investment",
+      headerName: "Stages of Investment",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "hq_location",
+      headerName: "Location",
       width: 200,
       editable: true,
       renderCell: renderCellWithEditButton,

@@ -10,16 +10,21 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 import "./CompanyGrid.css";
 
 const CompanyGrid = () => {
-  const [location, setLocation] = useState("");
-  const [query, setQuery] = useState("");
+  // const navigate = useNavigate();
+  const locationData = useLocation();
+
+  const [location, setLocation] = useState(locationData.state?.location || "");
+  const [query, setQuery] = useState(locationData.state?.query || "");
+  const [companies, setCompanies] = useState([]);
+  const [editingCell, setEditingCell] = useState(null);
+  const [editedValue, setEditedValue] = useState("");
   const [pageCount, setPageCount] = useState(20);
   const [expandedRow, setExpandedRow] = useState(null);
-  const [companies, setCompanies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isFieldLoading, setIsFieldLoading] = useState({});
   const [currentTitle, setCurrentTitle] = useState("");
@@ -34,11 +39,50 @@ const CompanyGrid = () => {
   };
 
   useEffect(() => {
-    setCompanies(JSON.parse(localStorage.getItem("companies")));
-  }, []);
+    const storedData = JSON.parse(localStorage.getItem("companyData")) || {};
+    const savedCompanies = storedData[`${location}_${query}`] || [];
+    setCompanies(savedCompanies);
+  }, [location, query]);
+
+  const handleNavigateHistory = () => {
+    navigate("/previous-history");
+  };
+  const handleCellEditStart = (params) => {
+    // Directly use params.value instead of relying on the state
+    console.log("edit start", params.key); // Log the value directly
+    setEditedValue(params.key);
+  };
+
+  const handleCellEditStop = (params) => {
+    const updatedRow = params.row; // The updated row data
+
+    // Check if the edited field is "website"
+    if (params.field === "website") {
+      // Update the corresponding row in the state or backend
+      const updatedCompanies = companies.map((company) => {
+        if (company.data_id === updatedRow.data_id) {
+          return { ...company, website: updatedRow.website }; // Assuming website is the field being edited
+        }
+        return company;
+      });
+
+      // Update local state with the new row data
+      setCompanies(updatedCompanies);
+
+      // Optionally, store the updated data in localStorage or send to backend
+      const storedData = JSON.parse(localStorage.getItem("companyData")) || {};
+      const queryKey = `${location}_${query}`;
+      storedData[queryKey] = updatedCompanies;
+      localStorage.setItem("companyData", JSON.stringify(storedData));
+
+      console.log("Row updated:", updatedRow);
+    }
+  };
 
   const handleOnClick = async () => {
     setIsLoading(true);
+    const queryKey = `${location}_${query}`;
+
     let payloadData = {
       location: location,
       query: query + " in " + location,
@@ -52,16 +96,30 @@ const CompanyGrid = () => {
       },
       data: payloadData,
     };
-    try {
-      let fetchData = await axios(configuration);
-      if (fetchData.status === 200) {
-        // Remove duplicates from fetchData.data based on specific fields (e.g., title and address)
-        const uniqueData = fetchData.data.reduce(
-          (acc, current) => {
-            console.log(current.title);
-            const identifier = `${current.title}_${current.address}`;
 
-            // Check if the item already exists in the map
+    try {
+      const fetchData = await axios(configuration);
+      console.log(fetchData.data);
+      if (fetchData.status === 200) {
+        // Check if the query is related to "vc investors" or similar terms
+        const filteredData = [
+          "vc investors",
+          "venture capital",
+          "vc",
+          "venture capital company",
+        ].some((type) => query.toLowerCase().includes(type))
+          ? fetchData.data.filter((company) =>
+              [
+                "vc investors",
+                "venture capital",
+                "vc",
+                "venture capital company",
+              ].some((type) => company.type.toLowerCase().includes(type))
+            )
+          : fetchData.data; // If the query doesn't match, don't filter
+        const uniqueData = filteredData.reduce(
+          (acc, current) => {
+            const identifier = `${current.title}_${current.address}`;
             if (!acc.map.has(identifier)) {
               acc.map.set(identifier, true);
               acc.list.push(current);
@@ -71,9 +129,29 @@ const CompanyGrid = () => {
           { map: new Map(), list: [] }
         ).list;
 
-        console.log(uniqueData);
-        setCompanies(uniqueData);
-        localStorage.setItem("companies", JSON.stringify(uniqueData));
+        // Check if companies for the queryKey already exist in localStorage
+        const storedData =
+          JSON.parse(localStorage.getItem("companyData")) || {};
+        const existingCompanies = storedData[queryKey] || [];
+
+        // Append new companies to existing ones if they are unique
+        const combinedCompanies = [...existingCompanies, ...uniqueData];
+        const uniqueCombinedCompanies = combinedCompanies.reduce(
+          (acc, company) => {
+            const identifier = `${company.title}_${company.address}`;
+            if (!acc.map.has(identifier)) {
+              acc.map.set(identifier, true);
+              acc.list.push(company);
+            }
+            return acc;
+          },
+          { map: new Map(), list: [] }
+        ).list;
+
+        // Update companies and store the result
+        setCompanies(uniqueCombinedCompanies);
+        storedData[queryKey] = uniqueCombinedCompanies;
+        localStorage.setItem("companyData", JSON.stringify(storedData));
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -181,6 +259,27 @@ const CompanyGrid = () => {
 
   const handleCloseModal = () => {
     setOpenModal(false);
+  };
+  const handleCellEditCommit = (params) => {
+    console.log("called,", params);
+    const updatedCompanies = companies.map((company) => {
+      if (company.data_id === params.id) {
+        return {
+          ...company,
+          [params.field]: params.value,
+        };
+      }
+      return company;
+    });
+
+    // Update local state
+    setCompanies(updatedCompanies);
+
+    // Update localStorage
+    const storedData = JSON.parse(localStorage.getItem("companyData")) || {};
+    const queryKey = `${location}_${query}`;
+    storedData[queryKey] = updatedCompanies;
+    localStorage.setItem("companyData", JSON.stringify(storedData));
   };
 
   const columns = [
@@ -290,6 +389,7 @@ const CompanyGrid = () => {
 
   return (
     <div className="company-grid-container">
+      <button onClick={handleNavigateHistory}>View Previous Searches</button>
       {/* Modal Popup for Retraining Warning */}
       <Dialog
         open={openModal}
