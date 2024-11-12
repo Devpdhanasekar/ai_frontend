@@ -40,9 +40,23 @@ const CustomTable = () => {
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get("http://localhost:8080/investment");
-      console.log(response.data);
-      setCompanies(response.data);
+      const response = await axios.get(
+        "https://mohur-ai.onrender.com/investment"
+      );
+      const data = response.data;
+
+      // If we're on the angel route, filter immediately
+      if (currentContext.state.route === "angel") {
+        const filteredData = data.filter((company) =>
+          company.investor_type.toLowerCase().includes("angel")
+        );
+        setCompanies(filteredData);
+      } else {
+        const filteredData = data.filter(
+          (company) => !company.investor_type.toLowerCase().includes("angel")
+        );
+        setCompanies(filteredData);
+      }
     } catch (error) {
       console.error("Error fetching the investors data", error);
     } finally {
@@ -51,20 +65,17 @@ const CustomTable = () => {
   };
 
   useEffect(() => {
-    fetchData().then(() => {
-      if (currentContext.state.route === "angel") {
-        filterForAngel();
-      }
-    });
+    fetchData();
     setActiveColumns(
       currentContext.state.route === "angel" ? angelNetworkColumns : columns
     );
   }, []);
 
   const filterForAngel = () => {
-    const filteredCompanies = companies.filter(
-      (company) => +company.investor_type.contains("angel")
+    const filteredCompanies = companies.filter((company) =>
+      company.investor_type.toLowerCase().includes("angel")
     );
+    console.log("invets", companies);
     console.log("filteredCompanies", filteredCompanies);
     setCompanies(filteredCompanies);
   };
@@ -82,8 +93,9 @@ const CustomTable = () => {
       };
       const endpoint = manualAns === "" ? "update" : "updateManual";
       console.log(endpoint);
+      console.log(payloadData);
       const response = await axios.post(
-        `http://localhost:8080/${endpoint}`,
+        `https://mohur-ai.onrender.com/${endpoint}`,
         payloadData
       );
       console.log(response.data);
@@ -122,16 +134,26 @@ const CustomTable = () => {
     link.click();
   };
   const allowedFieldsForAIUpdate = [
-    "fund_size",
+    "size_of_the_fund",
     "deals_in_last_12_months",
     "team_size",
     "equity_debt_fund_category",
     "sectors_of_investment",
+    "stages_of_entry_investment",
     "founded_year",
     "operating_status_active_deadpooled_etc",
     "linkedin",
     "youtube",
     "twitter",
+    "aum",
+    "founded_year",
+    "portfolio_companies",
+    "portfolio_acquisitions",
+    "geographies_invested_in",
+    "no_of_portfolio_companies_invested_in",
+    "portfolio_unicorns_or_soonicorns",
+    "group_email_id_email_id",
+    "founders",
   ];
 
   const renderCellWithEditButton = (params) => (

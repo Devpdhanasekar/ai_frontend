@@ -181,6 +181,28 @@ const CompanyGrid = () => {
     console.log(company);
     console.log(isFieldLoading);
     console.log(currentTitle);
+    console.log(
+      query.includes("vc") ||
+        query.toLowerCase().includes("venture capital") ||
+        query.toLowerCase().includes("vc investors") ||
+        query.toLowerCase().includes("venture capital company")
+    );
+    const isConformed = window.confirm(
+      `Are you sure you want to scrape for ${
+        query.includes("vc") ||
+        query.toLowerCase().includes("venture capital") ||
+        query.toLowerCase().includes("vc investors") ||
+        query.toLowerCase().includes("venture capital company")
+          ? "VC investors"
+          : "Angel investors"
+      }?`
+    );
+    if (isConformed) {
+      company.type = "vc investor";
+    } else {
+      company.type = "angel investor";
+    }
+
     let configuration = {
       method: "POST",
       url: "https://mohur-ai.onrender.com/initialDataScrape",
