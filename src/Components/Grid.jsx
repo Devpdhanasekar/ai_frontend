@@ -189,18 +189,27 @@ const CompanyGrid = () => {
     );
     const isConformed = window.confirm(
       `Are you sure you want to scrape for ${
-        query.includes("vc") ||
+        query.toLowerCase().includes("vc") ||
         query.toLowerCase().includes("venture capital") ||
-        query.toLowerCase().includes("vc investors") ||
-        query.toLowerCase().includes("venture capital company")
+        query.toLowerCase().includes("vc") ||
+        query.toLowerCase().includes("venture")
           ? "VC investors"
           : "Angel investors"
       }?`
     );
-    if (isConformed) {
+    if (
+      (query.toLowerCase().includes("vc") ||
+        query.toLowerCase().includes("venture capital") ||
+        query.toLowerCase().includes("vc") ||
+        query.toLowerCase().includes("venture")) &&
+      isConformed
+    ) {
       company.type = "vc investor";
-    } else {
+    } else if (query.toLowerCase().includes("angel") && isConformed) {
       company.type = "angel investor";
+    } else {
+      setIsFieldLoading((prev) => ({ ...prev, [company.data_id]: false }));
+      return;
     }
 
     let configuration = {
