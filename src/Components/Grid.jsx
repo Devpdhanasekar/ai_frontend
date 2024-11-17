@@ -166,9 +166,9 @@ const CompanyGrid = () => {
       const response = {
         website: advancedUrl,
         type: investorType,
-        title: domain.split(".")[1],
+        title: domain.split(".")[0],
       };
-      getLLMData(response).then(() => setIsLoading(false));
+      advancedUrlData(response).then(() => setIsLoading(false));
     } catch (error) {
       console.error("Error in advanced scrape:", error);
     } finally {
@@ -178,9 +178,9 @@ const CompanyGrid = () => {
 
   const getLLMData = async (company) => {
     setIsFieldLoading((prev) => ({ ...prev, [company.data_id]: true }));
-    console.log(company);
-    console.log(isFieldLoading);
-    console.log(currentTitle);
+    console.log("company", company);
+    console.log("isFieldLoading", isFieldLoading);
+    console.log("currentTitle", currentTitle);
     console.log(
       query.includes("vc") ||
         query.toLowerCase().includes("venture capital") ||
@@ -238,6 +238,36 @@ const CompanyGrid = () => {
       console.error("Error scraping data:", error);
     } finally {
       setIsFieldLoading((prev) => ({ ...prev, [company.data_id]: false }));
+    }
+  };
+
+  const advancedUrlData = async (company) => {
+    let configuration = {
+      method: "POST",
+      url: "https://mohur-ai.onrender.com/initialDataScrape",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: { url: company },
+    };
+    try {
+      const investorData = await axios(configuration);
+      console.log(investorData.data);
+      if (investorData.status === 200) {
+        alert(
+          investorData.data.message
+            ? investorData.data.message
+            : "Data scraped successfully"
+        );
+        console.log(investorData.data);
+      } else {
+        console.log(investorData.data);
+        alert("Please try again");
+      }
+    } catch (error) {
+      console.error("Error scraping data:", error);
+    } finally {
+      console.log("filal");
     }
   };
 
@@ -429,13 +459,13 @@ const CompanyGrid = () => {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Ongoing Angel Investors Process"}
+          {"Ongoing Accelerators & Incubators Process"}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Angel investors model retraining and environment building are in
-            progress. Please avoid interacting with angel investor-related
-            functionalities during this process.
+            Accelerators & Incubators model retraining and environment building
+            are in progress. Please avoid interacting with Accelerators &
+            Incubators-related functionalities during this process.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
