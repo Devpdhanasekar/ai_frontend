@@ -460,11 +460,11 @@ const CompanyGrid = () => {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Ongoing Accelerators & Incubators Process"}
+          {"Ongoing Goverment Grants & Schemes Process"}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Accelerators & Incubators model retraining and environment building
+            Goverment Grants & Schemes model retraining and environment building
             are in progress. Please avoid interacting with Accelerators &
             Incubators-related functionalities during this process.
           </DialogContentText>
