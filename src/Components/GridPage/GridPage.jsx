@@ -18,6 +18,18 @@ const GridPage = () => {
       <div className="grid-item" onClick={() => handleNavigate("angel")}>
         Angel Networks
       </div>
+      <div
+        className="grid-item"
+        onClick={() => handleNavigate("accelerators and incubators")}
+      >
+        Accelerators and Incubators
+      </div>
+      <div
+        className="grid-item"
+        onClick={() => handleNavigate("corporate venture capital")}
+      >
+        Corporate Venture Capital
+      </div>
     </div>
   );
 };

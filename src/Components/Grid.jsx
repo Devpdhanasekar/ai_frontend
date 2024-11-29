@@ -102,21 +102,7 @@ const CompanyGrid = () => {
       console.log(fetchData.data);
       if (fetchData.status === 200) {
         // Check if the query is related to "vc investors" or similar terms
-        const filteredData = [
-          "vc investors",
-          "venture capital",
-          "vc",
-          "venture capital company",
-        ].some((type) => query.toLowerCase().includes(type))
-          ? fetchData.data.filter((company) =>
-              [
-                "vc investors",
-                "venture capital",
-                "vc",
-                "venture capital company",
-              ].some((type) => company.type.toLowerCase().includes(type))
-            )
-          : fetchData.data; // If the query doesn't match, don't filter
+        const filteredData = fetchData.data; // If the query doesn't match, don't filter
         const uniqueData = filteredData.reduce(
           (acc, current) => {
             const identifier = `${current.title}_${current.address}`;
@@ -189,15 +175,24 @@ const CompanyGrid = () => {
     );
     const isConformed = window.confirm(
       `Are you sure you want to scrape for ${
-        query.toLowerCase().includes("vc") ||
-        query.toLowerCase().includes("venture capital") ||
-        query.toLowerCase().includes("vc") ||
-        query.toLowerCase().includes("venture")
+        query.toLowerCase().includes("corporate venture capital")
+          ? "Corporate Venture Capital CVC"
+          : query.toLowerCase().includes("vc") ||
+            query.toLowerCase().includes("venture capital") ||
+            query.toLowerCase().includes("venture")
           ? "VC investors"
+          : query.toLowerCase().includes("accelerators") ||
+            query.toLowerCase().includes("incubators")
+          ? "Accelerators and Incubators"
           : "Angel investors"
       }?`
     );
     if (
+      query.toLowerCase().includes("corporate venture capital") &&
+      isConformed
+    ) {
+      company.type = "corporate venture capital";
+    } else if (
       (query.toLowerCase().includes("vc") ||
         query.toLowerCase().includes("venture capital") ||
         query.toLowerCase().includes("vc") ||
@@ -205,6 +200,12 @@ const CompanyGrid = () => {
       isConformed
     ) {
       company.type = "vc investor";
+    } else if (
+      (query.toLowerCase().includes("accelerators") ||
+        query.toLowerCase().includes("incubators")) &&
+      isConformed
+    ) {
+      company.type = "accelerators and incubators";
     } else if (query.toLowerCase().includes("angel") && isConformed) {
       company.type = "angel investor";
     } else {
@@ -498,8 +499,14 @@ const CompanyGrid = () => {
             fullWidth
             margin="dense"
           >
-            <MenuItem value="vc_investor">VC Investor</MenuItem>
-            <MenuItem value="angel_investor">Angel Investor</MenuItem>
+            <MenuItem value="vc investor">VC Investor</MenuItem>
+            <MenuItem value="angel investor">Angel Investor</MenuItem>
+            <MenuItem value="accelerators and incubators">
+              Accelerators and Incubators
+            </MenuItem>
+            <MenuItem value="corporate venture capital">
+              Corporate Venture Capital
+            </MenuItem>
           </TextField>
         </DialogContent>
         <DialogActions>

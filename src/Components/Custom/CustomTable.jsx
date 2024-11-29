@@ -51,6 +51,25 @@ const CustomTable = () => {
           company.investor_type.toLowerCase().includes("angel")
         );
         setCompanies(filteredData);
+      } else if (currentContext.state.route === "vc") {
+        const filteredData = data.filter((company) =>
+          company.investor_type.toLowerCase().includes("vc investor")
+        );
+        setCompanies(filteredData);
+      } else if (currentContext.state.route === "corporate venture capital") {
+        const filteredData = data.filter((company) =>
+          company.investor_type
+            .toLowerCase()
+            .includes("corporate venture capital")
+        );
+        setCompanies(filteredData);
+      } else if (currentContext.state.route === "accelerators and incubators") {
+        const filteredData = data.filter((company) =>
+          company.investor_type
+            .toLowerCase()
+            .includes("accelerators and incubators")
+        );
+        setCompanies(filteredData);
       } else {
         const filteredData = data.filter(
           (company) => !company.investor_type.toLowerCase().includes("angel")
