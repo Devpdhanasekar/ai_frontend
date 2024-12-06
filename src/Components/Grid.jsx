@@ -213,9 +213,10 @@ const CompanyGrid = () => {
     } else if (query.toLowerCase().includes("angel") && isConformed) {
       company.type = "angel investor";
     } else if (
-      query.toLowerCase().includes("goverment grants & schemes") ||
-      query.toLowerCase().includes("goverment grants") ||
-      query.toLowerCase().includes("schemes")
+      (query.toLowerCase().includes("goverment grants & schemes") ||
+        query.toLowerCase().includes("goverment grants") ||
+        query.toLowerCase().includes("schemes")) &&
+      isConformed
     ) {
       company.type = "goverment grants & schemes";
     } else {
