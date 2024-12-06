@@ -30,6 +30,12 @@ const GridPage = () => {
       >
         Corporate Venture Capital
       </div>
+      <div
+        className="grid-item"
+        onClick={() => handleNavigate("goverment grants & schemes")}
+      >
+        Goverment Grants & Schemes
+      </div>
     </div>
   );
 };

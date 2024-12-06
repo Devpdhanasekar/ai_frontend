@@ -177,6 +177,10 @@ const CompanyGrid = () => {
       `Are you sure you want to scrape for ${
         query.toLowerCase().includes("corporate venture capital")
           ? "Corporate Venture Capital CVC"
+          : query.toLowerCase().includes("goverment grants & schemes") ||
+            query.toLowerCase().includes("goverment grants") ||
+            query.toLowerCase().includes("schemes")
+          ? "Goverment Grants & Schemes"
           : query.toLowerCase().includes("vc") ||
             query.toLowerCase().includes("venture capital") ||
             query.toLowerCase().includes("venture")
@@ -208,6 +212,12 @@ const CompanyGrid = () => {
       company.type = "accelerators and incubators";
     } else if (query.toLowerCase().includes("angel") && isConformed) {
       company.type = "angel investor";
+    } else if (
+      query.toLowerCase().includes("goverment grants & schemes") ||
+      query.toLowerCase().includes("goverment grants") ||
+      query.toLowerCase().includes("schemes")
+    ) {
+      company.type = "goverment grants & schemes";
     } else {
       setIsFieldLoading((prev) => ({ ...prev, [company.data_id]: false }));
       return;
@@ -506,6 +516,9 @@ const CompanyGrid = () => {
             </MenuItem>
             <MenuItem value="corporate venture capital">
               Corporate Venture Capital
+            </MenuItem>
+            <MenuItem value="goverment grants & schemes">
+              Goverment Grants & Schemes
             </MenuItem>
           </TextField>
         </DialogContent>

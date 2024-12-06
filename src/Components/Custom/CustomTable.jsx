@@ -70,6 +70,13 @@ const CustomTable = () => {
             .includes("accelerators and incubators")
         );
         setCompanies(filteredData);
+      } else if (currentContext.state.route === "goverment grants & schemes") {
+        const filteredData = data.filter((company) =>
+          company.investor_type
+            .toLowerCase()
+            .includes("goverment grants & schemes")
+        );
+        setCompanies(filteredData);
       } else {
         const filteredData = data.filter(
           (company) => !company.investor_type.toLowerCase().includes("angel")
