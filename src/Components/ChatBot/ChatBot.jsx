@@ -33,7 +33,7 @@ const Chatbot = () => {
 
         // Send the API request
         const response = await axios.post(
-          "https://mohur-ai.onrender.com/chatbot",
+          "http://3.108.54.190:8080/chatbot",
           payload
         );
 
