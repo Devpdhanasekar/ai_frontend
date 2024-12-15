@@ -464,28 +464,6 @@ const CompanyGrid = () => {
     <div className="company-grid-container">
       <button onClick={handleNavigateHistory}>View Previous Searches</button>
       {/* Modal Popup for Retraining Warning */}
-      <Dialog
-        open={openModal}
-        onClose={() => setOpenModal(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {"Ongoing Goverment Grants & Schemes Process"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Goverment Grants & Schemes model retraining and environment building
-            are in progress. Please avoid interacting with Accelerators &
-            Incubators-related functionalities during this process.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenModal(false)} autoFocus>
-            OK
-          </Button>
-        </DialogActions>
-      </Dialog>
 
       {/* Advanced Options Modal */}
       <Dialog
