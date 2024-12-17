@@ -33,7 +33,7 @@ const Chatbot = () => {
 
         // Send the API request
         const response = await axios.post(
-          "http://3.108.54.190:8080/chatbot",
+          "https://3.108.54.190:8080/chatbot",
           payload
         );
 

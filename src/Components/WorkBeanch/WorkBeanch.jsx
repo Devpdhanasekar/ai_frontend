@@ -192,7 +192,7 @@
 //     if (connectedToEndpoints && urlNode?.data.url) {
 //       console.log("URL:", urlNode.data.url);
 //       const response = await axios.post(
-//         `http://3.108.54.190:8080/getendpoints`,
+//         `https://3.108.54.190:8080/getendpoints`,
 //         (data = { url: urlNode.data.url })
 //       );
 //       const data = await response.json();
@@ -460,7 +460,7 @@
 //       console.log("URL present in URL Node?");
 //       try {
 //         const response = await axios.post(
-//           `http://3.108.54.190:8080/getendpoints`,
+//           `https://3.108.54.190:8080/getendpoints`,
 //           { url: urlNode.data.url }
 //         );
 //         console.log("response", response);
@@ -761,7 +761,7 @@ const WorkBeanch = () => {
     if (connectedToEndpoints && urlNode?.data.url && !connectedToRawData) {
       try {
         const response = await axios.post(
-          `http://3.108.54.190:8080/getendpoints`,
+          `https://3.108.54.190:8080/getendpoints`,
           { url: urlNode.data.url }
         );
         console.log("response", response);
@@ -789,7 +789,7 @@ const WorkBeanch = () => {
     if (connectedToRawData && endpoints.length > 0) {
       try {
         const response = await axios.post(
-          "http://3.108.54.190:8080/getrawdata",
+          "https://3.108.54.190:8080/getrawdata",
           {
             url: urlNode.data.url,
             endpoints: endpoints,
