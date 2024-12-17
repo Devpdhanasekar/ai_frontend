@@ -40,7 +40,7 @@ const CustomTable = () => {
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get("https://3.108.54.190:8080/investment");
+      const response = await axios.get("http://3.108.54.190:8080/investment");
       const data = response.data;
 
       // If we're on the angel route, filter immediately
@@ -119,7 +119,7 @@ const CustomTable = () => {
       console.log(endpoint);
       console.log(payloadData);
       const response = await axios.post(
-        `https://3.108.54.190:8080/${endpoint}`,
+        `http://3.108.54.190:8080/${endpoint}`,
         payloadData
       );
       console.log(response.data);
