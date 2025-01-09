@@ -180,8 +180,16 @@ const CustomTable = () => {
     "no_of_portfolio_companies_invested_in",
     "portfolio_unicorns_or_soonicorns",
     "portfolio_exits",
+    "no_of_exits",
+    "no_of_portfolio_acquisitions",
+    "no_of_portfolio_unicorns_soonicorns",
     "group_email_id_email_id",
     "founders",
+    "objective",
+    "features",
+    "benefits",
+    "eligibility",
+    "application_process",
   ];
 
   const renderCellWithEditButton = (params) => (
@@ -287,6 +295,13 @@ const CustomTable = () => {
       renderCell: renderCellWithEditButton,
     },
     {
+      field: "no_of_exits",
+      headerName: "No. of Exits",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
       field: "portfolio_unicorns_or_soonicorns",
       headerName: "Portfolio Unicorns / Soonicorns",
       width: 200,
@@ -303,6 +318,13 @@ const CustomTable = () => {
     {
       field: "portfolio_acquisitions",
       headerName: "Portfolio Acquisitions",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "no_of_portfolio_unicorns_soonicorns",
+      headerName: "No.of Portfolio Unicorns / Soonicorns",
       width: 200,
       editable: true,
       renderCell: renderCellWithEditButton,
@@ -491,6 +513,13 @@ const CustomTable = () => {
       renderCell: renderCellWithEditButton,
     },
     {
+      field: "no_of_exits",
+      headerName: "No. of Exits",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
       field: "portfolio_unicorns_or_soonicorns",
       headerName: "Portfolio Unicorns / Soonicorns",
       width: 200,
@@ -504,13 +533,13 @@ const CustomTable = () => {
     //   editable: true,
     //   renderCell: renderCellWithEditButton,
     // },
-    // {
-    //   field: "portfolio_acquisitions",
-    //   headerName: "Portfolio Acquisitions",
-    //   width: 200,
-    //   editable: true,
-    //   renderCell: renderCellWithEditButton,
-    // },
+    {
+      field: "portfolio_acquisitions",
+      headerName: "Portfolio Acquisitions",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
     {
       field: "founded_year",
       headerName: "Founded Year",
@@ -795,6 +824,13 @@ const CustomTable = () => {
       renderCell: renderCellWithEditButton,
     },
     {
+      field: "no_of_portfolio_companies_invested_in",
+      headerName: "No of Portfolio Companies Invested In",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
       field: "no_of_exits",
       headerName: "No. of Exits",
       width: 200,
@@ -825,6 +861,13 @@ const CustomTable = () => {
     {
       field: "portfolio_unicorns_soonicorns",
       headerName: "Portfolio Unicorns/Soonicorns",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "no_of_portfolio_unicorns_soonicorns",
+      headerName: "No.of Portfolio Unicorns / Soonicorns",
       width: 200,
       editable: true,
       renderCell: renderCellWithEditButton,
@@ -895,6 +938,20 @@ const CustomTable = () => {
     {
       field: "twitter",
       headerName: "Twitter (X)",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "youtube",
+      headerName: "Youtube",
+      width: 200,
+      editable: true,
+      renderCell: renderCellWithEditButton,
+    },
+    {
+      field: "instagram",
+      headerName: "Instagram",
       width: 200,
       editable: true,
       renderCell: renderCellWithEditButton,
