@@ -178,7 +178,7 @@ const CustomTable = () => {
     "portfolio_acquisitions",
     "geographies_invested_in",
     "no_of_portfolio_companies_invested_in",
-    "portfolio_unicorns_or_soonicorns",
+    "portfolio_unicorns_soonicorns",
     "portfolio_exits",
     "no_of_exits",
     "no_of_portfolio_acquisitions",
@@ -302,7 +302,7 @@ const CustomTable = () => {
       renderCell: renderCellWithEditButton,
     },
     {
-      field: "portfolio_unicorns_or_soonicorns",
+      field: "portfolio_unicorns_soonicorns",
       headerName: "Portfolio Unicorns / Soonicorns",
       width: 200,
       editable: true,
@@ -520,7 +520,7 @@ const CustomTable = () => {
       renderCell: renderCellWithEditButton,
     },
     {
-      field: "portfolio_unicorns_or_soonicorns",
+      field: "portfolio_unicorns_soonicorns",
       headerName: "Portfolio Unicorns / Soonicorns",
       width: 200,
       editable: true,
