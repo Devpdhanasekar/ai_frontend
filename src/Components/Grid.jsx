@@ -90,7 +90,7 @@ const CompanyGrid = () => {
     };
     let configuration = {
       method: "POST",
-      url: "http://3.108.54.190:8080/googlemap",
+      url: "http://3.110.84.45:8080/googlemap",
       headers: {
         "Content-Type": "application/json",
       },
@@ -226,7 +226,7 @@ const CompanyGrid = () => {
 
     let configuration = {
       method: "POST",
-      url: "http://3.108.54.190:8080/initialDataScrape",
+      url: "http://3.110.84.45:8080/initialDataScrape",
       headers: {
         "Content-Type": "application/json",
       },
@@ -256,7 +256,7 @@ const CompanyGrid = () => {
   const advancedUrlData = async (company) => {
     let configuration = {
       method: "POST",
-      url: "http://3.108.54.190:8080/initialDataScrape",
+      url: "http://3.110.84.45:8080/initialDataScrape",
       headers: {
         "Content-Type": "application/json",
       },
@@ -304,7 +304,7 @@ const CompanyGrid = () => {
 
     let configuration = {
       method: "POST",
-      url: "http://3.108.54.190:8080/webscrap",
+      url: "http://3.110.84.45:8080/webscrap",
       headers: {
         "Content-Type": "application/json",
       },
