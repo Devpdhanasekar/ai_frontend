@@ -192,23 +192,35 @@ const CustomTable = () => {
     "application_process",
   ];
 
-  const renderCellWithEditButton = (params) => (
-    <div
-      style={{
-        whiteSpace: "normal",
-        overflowWrap: "break-word",
-        wordBreak: "break-all",
-        padding: "4px",
-        boxSizing: "border-box",
-      }}
-    >
-      {params.value}
-      <br />
-      <button className="edit_btn" onClick={() => openModal(params.row)}>
-        <i className="fa-solid fa-pen-to-square"></i>
-      </button>
-    </div>
-  );
+  const renderCellWithEditButton = (params) => {
+    let value = params.value;
+
+    // Check if the value is an array and format it properly
+    if (Array.isArray(value)) {
+      value = value.join(", "); // Change separator if needed (e.g., " | ", " • ", etc.)
+    }
+
+    return (
+      <div
+        style={{
+          whiteSpace: "normal",
+          overflowWrap: "break-word",
+          wordBreak: "break-word", // Use "break-word" instead of "break-all" for better readability
+          padding: "4px",
+          boxSizing: "border-box",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "8px",
+        }}
+      >
+        <span>{value}</span>
+        <button className="edit_btn" onClick={() => openModal(params.row)}>
+          <i className="fa-solid fa-pen-to-square"></i>
+        </button>
+      </div>
+    );
+  };
 
   const columns = [
     {
