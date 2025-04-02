@@ -152,9 +152,32 @@ const CompanyGrid = () => {
       const response = {
         website: advancedUrl,
         type: investorType,
-        title: domain.split(".")[0],
+        title: domain.split(".")[1],
       };
-      advancedUrlData(response).then(() => setIsLoading(false));
+      const allEndPoints = await axios.post(
+        `http://3.110.84.45:8080/getendpoints`,
+        { url: advancedUrl }
+      );
+      if (allEndPoints.status === 200) {
+        if (allEndPoints.data.length !== 0) {
+          console.log("all endpoints", allEndPoints.data);
+          const highPriorityEndPoints = await axios.post(
+            "http://3.110.84.45:8080/getrawdata",
+            {
+              url: advancedUrl,
+              endpoints: allEndPoints,
+              isFlag: true,
+            }
+          );
+          if (highPriorityEndPoints.status === 200) {
+            console.log("high priority endpoints", highPriorityEndPoints.data);
+            const data = highPriorityEndPoints.data;
+            advancedUrlData(response, data).then(() => setIsLoading(false));
+          }
+        } else {
+          alert("Not able to scrape the website");
+        }
+      }
     } catch (error) {
       console.error("Error in advanced scrape:", error);
     } finally {
@@ -253,14 +276,14 @@ const CompanyGrid = () => {
     }
   };
 
-  const advancedUrlData = async (company) => {
+  const advancedUrlData = async (company, data) => {
     let configuration = {
       method: "POST",
       url: "http://3.110.84.45:8080/initialDataScrape",
       headers: {
         "Content-Type": "application/json",
       },
-      data: { url: company },
+      data: { url: company, endpoints: data },
     };
     try {
       const investorData = await axios(configuration);
