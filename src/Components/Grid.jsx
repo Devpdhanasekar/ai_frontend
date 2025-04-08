@@ -174,7 +174,9 @@ const CompanyGrid = () => {
           //   const data = highPriorityEndPoints.data;
           //   advancedUrlData(response, data).then(() => setIsLoading(false));
           // }
-          advancedUrlData(response, data).then(() => setIsLoading(false));
+          advancedUrlData(response, allEndPoints.data).then(() =>
+            setIsLoading(false)
+          );
         } else {
           alert("Not able to scrape the website");
         }
