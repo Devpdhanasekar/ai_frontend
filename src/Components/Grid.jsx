@@ -178,7 +178,10 @@ const CompanyGrid = () => {
             setIsLoading(false)
           );
         } else {
-          alert("Not able to scrape the website");
+          // alert("Not able to scrape the website");
+          advancedUrlData(response, [advancedUrl]).then(() =>
+            setIsLoading(false)
+          );
         }
       }
     } catch (error) {
