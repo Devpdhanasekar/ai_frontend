@@ -588,5 +588,4 @@ const CompanyGrid = () => {
     </div>
   );
 };
-
 export default CompanyGrid;
