@@ -161,22 +161,22 @@ const CompanyGrid = () => {
       if (allEndPoints.status === 200) {
         if (allEndPoints.data.length !== 0) {
           console.log("all endpoints", allEndPoints.data);
-          // const highPriorityEndPoints = await axios.post(
-          //   "http://3.110.84.45:8080/getrawdata",
-          //   {
-          //     url: advancedUrl,
-          //     endpoints: allEndPoints,
-          //     isFlag: true,
-          //   }
-          // );
-          // if (highPriorityEndPoints.status === 200) {
-          //   console.log("high priority endpoints", highPriorityEndPoints.data);
-          //   const data = highPriorityEndPoints.data;
-          //   advancedUrlData(response, data).then(() => setIsLoading(false));
-          // }
-          advancedUrlData(response, allEndPoints.data).then(() =>
-            setIsLoading(false);
+          const highPriorityEndPoints = await axios.post(
+            "http://3.110.84.45:8080/getrawdata",
+            {
+              url: advancedUrl,
+              endpoints: allEndPoints,
+              isFlag: true,
+            }
           );
+          if (highPriorityEndPoints.status === 200) {
+            console.log("high priority endpoints", highPriorityEndPoints.data);
+            const data = highPriorityEndPoints.data;
+            advancedUrlData(response, data).then(() => setIsLoading(false));
+          }
+          // advancedUrlData(response, allEndPoints.data).then(() =>
+          //   setIsLoading(false);
+          // );
         } else {
           // alert("Not able to scrape the website");
           advancedUrlData(response, [advancedUrl]).then(() =>
