@@ -40,7 +40,7 @@ const CustomTable = () => {
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get("http://3.110.84.45:8080/investment");
+      const response = await axios.get("http://127.0.0.1:8080/investment");
       const data = response.data;
 
       // If we're on the angel route, filter immediately
@@ -127,7 +127,7 @@ const CustomTable = () => {
       console.log(endpoint);
       console.log(payloadData);
       const response = await axios.post(
-        `http://3.110.84.45:8080/${endpoint}`,
+        `http://127.0.0.1:8080/${endpoint}`,
         payloadData
       );
       console.log(response.data);
@@ -197,9 +197,22 @@ const CustomTable = () => {
   const renderCellWithEditButton = (params) => {
     let value = params.value;
 
-    // Check if the value is an array and format it properly
-    if (Array.isArray(value)) {
-      value = value.join(", "); // Change separator if needed (e.g., " | ", " • ", etc.)
+    // Handle different data types
+    if (value === null || value === undefined) {
+      value = "";
+    } else if (Array.isArray(value)) {
+      value = value.join(", ");
+    } else if (typeof value === "object") {
+      // Handle objects - you might want to customize this based on your data structure
+      if (value.response) {
+        value = value.response;
+      } else {
+        // Convert object to string representation
+        value = JSON.stringify(value);
+      }
+    } else if (typeof value !== "string" && typeof value !== "number") {
+      // Convert other types to string
+      value = String(value);
     }
 
     return (
@@ -207,7 +220,7 @@ const CustomTable = () => {
         style={{
           whiteSpace: "normal",
           overflowWrap: "break-word",
-          wordBreak: "break-word", // Use "break-word" instead of "break-all" for better readability
+          wordBreak: "break-word",
           padding: "4px",
           boxSizing: "border-box",
           display: "flex",
@@ -435,7 +448,7 @@ const CustomTable = () => {
       renderCell: renderCellWithEditButton,
     },
     {
-      field: "portfolio_urls",
+      field: "portfolio_company_urls",
       headerName: "portfolio_company_urls",
       width: 200,
       editable: true,
@@ -660,7 +673,7 @@ const CustomTable = () => {
     //   renderCell: renderCellWithEditButton,
     // },
     {
-      field: "portfolio_urls",
+      field: "portfolio_company_urls",
       headerName: "portfolio_company_urls",
       width: 200,
       editable: true,
@@ -1012,7 +1025,7 @@ const CustomTable = () => {
       renderCell: renderCellWithEditButton,
     },
     {
-      field: "portfolio_urls",
+      field: "portfolio_company_urls",
       headerName: "portfolio_company_urls",
       width: 200,
       editable: true,
