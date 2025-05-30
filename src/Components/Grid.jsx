@@ -90,7 +90,7 @@ const CompanyGrid = () => {
     };
     let configuration = {
       method: "POST",
-      url: "http://127.0.0.1:8080/googlemap",
+      url: "http://3.110.84.45:8080/googlemap",
       headers: {
         "Content-Type": "application/json",
       },
@@ -155,14 +155,14 @@ const CompanyGrid = () => {
         title: domain.split(".")[1],
       };
       const allEndPoints = await axios.post(
-        `http://127.0.0.1:8080/getendpoints`,
+        `http://3.110.84.45:8080/getendpoints`,
         { url: advancedUrl }
       );
       if (allEndPoints.status === 200) {
         if (allEndPoints.data.length !== 0) {
           console.log("all endpoints", allEndPoints.data);
           const highPriorityEndPoints = await axios.post(
-            "http://127.0.0.1:8080/getrawdata",
+            "http://3.110.84.45:8080/getrawdata",
             {
               url: advancedUrl,
               endpoints: allEndPoints,
@@ -257,7 +257,7 @@ const CompanyGrid = () => {
 
     let configuration = {
       method: "POST",
-      url: "http://127.0.0.1:8080/initialDataScrape",
+      url: "http://3.110.84.45:8080/initialDataScrape",
       headers: {
         "Content-Type": "application/json",
       },
@@ -287,7 +287,7 @@ const CompanyGrid = () => {
   const advancedUrlData = async (company, data, baseEndPoints) => {
     let configuration = {
       method: "POST",
-      url: "http://127.0.0.1:8080/initialDataScrape",
+      url: "http://3.110.84.45:8080/initialDataScrape",
       headers: {
         "Content-Type": "application/json",
       },
@@ -335,7 +335,7 @@ const CompanyGrid = () => {
 
     let configuration = {
       method: "POST",
-      url: "http://127.0.0.1:8080/webscrap",
+      url: "http://3.110.84.45:8080/webscrap",
       headers: {
         "Content-Type": "application/json",
       },
