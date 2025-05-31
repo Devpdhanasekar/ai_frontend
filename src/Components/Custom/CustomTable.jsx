@@ -147,7 +147,39 @@ const CustomTable = () => {
   );
 
   const downloadExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(filteredCompanies);
+    // Get the field names from active columns (excluding the serial number column)
+    const activeFieldNames = activeColumns
+      .filter((col) => col.field !== "id") // Exclude the S.No column
+      .map((col) => col.field);
+
+    // Filter the data to include only active columns
+    const filteredData = filteredCompanies.map((company) => {
+      const filteredCompany = {};
+      activeFieldNames.forEach((field) => {
+        let value = company[field];
+
+        // Handle different data types similar to renderCellWithEditButton
+        if (value === null || value === undefined) {
+          value = "";
+        } else if (Array.isArray(value)) {
+          value = value.join(", ");
+        } else if (typeof value === "object") {
+          if (value.response) {
+            value = value.response;
+          } else {
+            value = JSON.stringify(value);
+          }
+        } else if (typeof value !== "string" && typeof value !== "number") {
+          value = String(value);
+        }
+
+        filteredCompany[field] = value;
+      });
+      return filteredCompany;
+    });
+
+    // Create worksheet with filtered data
+    const worksheet = XLSX.utils.json_to_sheet(filteredData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Companies");
 
